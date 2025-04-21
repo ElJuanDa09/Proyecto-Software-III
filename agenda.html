@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión del Tiempo - UniPlanner</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --background-color: #ffffff;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+        }
+        
+        .dark-mode {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --background-color: #121212;
+            --text-color: #f8f9fa;
+            --card-bg: #1e1e1e;
+            --sidebar-bg: #2d2d2d;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar, .sidebar {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.125);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-collapsed .sidebar {
+            width: 80px;
+        }
+        
+        .sidebar-collapsed .main-content {
+            margin-left: 80px;
+        }
+        
+        .sidebar-link {
+            color: var(--text-color);
+            border-radius: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-link:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-link.active {
+            background-color: var(--primary-color);
+            color: white !important;
+        }
+        
+        .sidebar-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .sidebar-collapsed .sidebar-link span {
+            display: none;
+        }
+        
+        .sidebar-collapsed .sidebar-link i {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+        
+        .sidebar-collapsed .sidebar-link {
+            text-align: center;
+            padding: 10px 5px;
+        }
+        
+        .task-completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .pomodoro-timer {
+            font-size: 5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .pomodoro-btn {
+            font-size: 1.2rem;
+            padding: 10px 25px;
+        }
+        
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        /* Ajustes para FullCalendar */
+        .fc .fc-toolbar-title {
+            font-size: 1.2rem;
+        }
+        
+        .fc .fc-button {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .sidebar-link span {
+                display: none;
+            }
+            
+            .sidebar-link i {
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+            
+            .sidebar-link {
+                text-align: center;
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3">
+        <a href="index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
+            <span class="fs-4">UniPlanner</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="agenda.html" class="nav-link sidebar-link active">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Gestión del Tiempo</span>
+                </a>
+            </li>
+            <li>
+                <a href="finanzas.html" class="nav-link sidebar-link">
+                    <i class="fas fa-wallet"></i>
+                    <span>Finanzas</span>
+                </a>
+            </li>
+            <li>
+                <a href="academico.html" class="nav-link sidebar-link">
+                    <i class="fas fa-book"></i>
+                    <span>Académico</span>
+                </a>
+            </li>
+            <li>
+                <a href="herramientas.html" class="nav-link sidebar-link">
+                    <i class="fas fa-tools"></i>
+                    <span>Herramientas</span>
+                </a>
+            </li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown">
+                <img src="https://via.placeholder.com/50" alt="Usuario" width="32" height="32" class="rounded-circle me-2">
+                <strong id="sidebarUsername">Usuario</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                <li><a class="dropdown-item" href="#" id="sidebarDarkModeToggle"><i class="fas fa-moon me-2"></i><span id="sidebarDarkModeText">Modo Oscuro</span></a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" id="sidebarLogoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+            </ul>
+        </div>
+        <button class="btn btn-sm btn-outline-secondary mt-3" id="toggleSidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <h1 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Gestión del Tiempo</h1>
+            
+            <!-- Fila superior con resumen -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Tareas Hoy</h5>
+                            <h2 class="card-text" id="tasksTodayCount">0</h2>
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-success" id="tasksTodayProgress" style="width: 0%"></div>
+                            </div>
+                            <small id="tasksTodayText">0/0 completadas</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Eventos Hoy</h5>
+                            <h2 class="card-text" id="eventsTodayCount">0</h2>
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-info" style="width: 100%"></div>
+                            </div>
+                            <small>Próximo: <span id="nextEventText">Ninguno</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Tiempo Productivo</h5>
+                            <h2 class="card-text" id="productiveTime">0h 0m</h2>
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-warning" id="productiveTimeProgress" style="width: 0%"></div>
+                            </div>
+                            <small>Meta: <span id="productiveTimeGoal">4h 0m</span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Pomodoros Hoy</h5>
+                            <h2 class="card-text" id="pomodorosToday">0</h2>
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-danger" id="pomodorosProgress" style="width: 0%"></div>
+                            </div>
+                            <small>Meta: <span id="pomodorosGoal">6</span> sesiones</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fila principal con calendario y tareas -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sección de Pomodoro -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Técnica Pomodoro</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="pomodoro-timer mb-4" id="pomodoroTimer">25:00</div>
+                            <div class="btn-group mb-3" role="group">
+                                <button type="button" class="btn btn-outline-primary pomodoro-btn" id="pomodoroWork">Trabajo (25m)</button>
+                                <button type="button" class="btn btn-outline-success pomodoro-btn" id="pomodoroShortBreak">Descanso Corto (5m)</button>
+                                <button type="button" class="btn btn-outline-info pomodoro-btn" id="pomodoroLongBreak">Descanso Largo (15m)</button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary btn-lg me-2" id="pomodoroStart"><i class="fas fa-play"></i> Iniciar</button>
+                                <button type="button" class="btn btn-secondary btn-lg me-2" id="pomodoroPause"><i class="fas fa-pause"></i> Pausar</button>
+                                <button type="button" class="btn btn-danger btn-lg" id="pomodoroReset"><i class="fas fa-stop"></i> Reiniciar</button>
+                            </div>
+                            <div class="mt-3">
+                                <small>Sesiones completadas hoy: <span id="pomodoroSessions">0</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Lista de tareas -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Lista de Tareas</h5>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="taskSearchInput" placeholder="Buscar tareas...">
+                                <button class="btn btn-outline-secondary" type="button" id="taskSearchBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <ul class="list-group" id="taskList">
+                                <!-- Tareas se agregarán aquí dinámicamente -->
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="task1">
+                                        <label class="form-check-label" for="task1">Estudiar para examen de matemáticas</label>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-primary me-1">Hoy</span>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="task2" checked>
+                                        <label class="form-check-label task-completed" for="task2">Entregar trabajo de historia</label>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-success me-1">Completada</span>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="task3">
+                                        <label class="form-check-label" for="task3">Leer capítulo 5 de literatura</label>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-warning me-1">Mañana</span>
+                                        <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Recordatorios importantes -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Recordatorios</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning d-flex align-items-center mb-2">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <div>Examen de Física el viernes</div>
+                            </div>
+                            <div class="alert alert-info d-flex align-items-center mb-2">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                <div>Reunión con grupo de estudio a las 16:00</div>
+                            </div>
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="fas fa-clock me-2"></i>
+                                <div>Entrega de ensayo en 2 días</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hábitos y seguimiento -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Seguimiento de Hábitos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6>Estudio diario</h6>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">3/4 horas</div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <h6>Ejercicio semanal</h6>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">2/4 días</div>
+                                </div>
+                            </div>
+                            <div>
+                                <h6>Horas de sueño</h6>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 83%;" aria-valuenow="83" aria-valuemin="0" aria-valuemax="100">6.6/8 horas</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar tarea -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nueva Tarea</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTaskForm">
+                        <div class="mb-3">
+                            <label for="taskTitle" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="taskTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taskDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="taskDueDate" class="form-label">Fecha límite</label>
+                                <input type="date" class="form-control" id="taskDueDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="taskPriority" class="form-label">Prioridad</label>
+                                <select class="form-select" id="taskPriority">
+                                    <option value="low">Baja</option>
+                                    <option value="medium" selected>Media</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="taskCategory" class="form-label">Categoría</label>
+                            <select class="form-select" id="taskCategory">
+                                <option value="study">Estudio</option>
+                                <option value="work">Trabajo</option>
+                                <option value="personal">Personal</option>
+                                <option value="other">Otro</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Guardar Tarea</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para evento del calendario -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalTitle">Detalles del Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="eventModalBody">
+                    <!-- Contenido dinámico -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" id="deleteEventBtn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar evento -->
+    <div class="modal fade" id="addEventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEventForm">
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="eventTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="eventDescription" rows="3"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="eventStartDate" class="form-label">Fecha de inicio</label>
+                                <input type="datetime-local" class="form-control" id="eventStartDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="eventEndDate" class="form-label">Fecha de fin</label>
+                                <input type="datetime-local" class="form-control" id="eventEndDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventColor" class="form-label">Color</label>
+                            <select class="form-select" id="eventColor">
+                                <option value="#0d6efd" selected>Azul</option>
+                                <option value="#198754">Verde</option>
+                                <option value="#dc3545">Rojo</option>
+                                <option value="#ffc107">Amarillo</option>
+                                <option value="#6f42c1">Morado</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveEventBtn">Guardar Evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y dependencias -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <!-- Scripts personalizados -->
+    <script>
+        // Variables globales
+        let pomodoroInterval;
+        let pomodoroTimeLeft = 25 * 60; // 25 minutos en segundos
+        let isPomodoroRunning = false;
+        let pomodoroMode = 'work'; // 'work', 'shortBreak', 'longBreak'
+        let pomodoroSessionsCompleted = 0;
+        let tasks = [
+            { id: 1, title: "Estudiar para examen de matemáticas", completed: false, dueDate: new Date().toISOString().split('T')[0], priority: "medium" },
+            { id: 2, title: "Entregar trabajo de historia", completed: true, dueDate: new Date().toISOString().split('T')[0], priority: "high" },
+            { id: 3, title: "Leer capítulo 5 de literatura", completed: false, dueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0], priority: "low" }
+        ];
+        
+        let events = [
+            { id: 1, title: "Clase de Matemáticas", start: new Date().setHours(9,0,0,0), end: new Date().setHours(11,0,0,0), color: "#0d6efd" },
+            { id: 2, title: "Reunión con grupo de estudio", start: new Date().setHours(16,0,0,0), end: new Date().setHours(17,30,0,0), color: "#198754" },
+            { id: 3, title: "Examen de Física", start: new Date(Date.now() + 3 * 86400000).setHours(10,0,0,0), end: new Date(Date.now() + 3 * 86400000).setHours(12,0,0,0), color: "#dc3545" }
+        ];
+        
+        // Inicialización al cargar la página
+        $(document).ready(function() {
+            // Verificar modo oscuro
+            if(localStorage.getItem('darkMode') === 'enabled') {
+                enableDarkMode();
+            }
+            
+            // Verificar usuario logueado
+            checkLoginStatus();
+            
+            // Inicializar calendario
+            initCalendar();
+            
+            // Cargar tareas
+            loadTasks();
+            
+            // Actualizar estadísticas
+            updateStats();
+            
+            // Configurar event listeners
+            setupEventListeners();
+            
+            // Configurar Pomodoro Timer
+            updatePomodoroDisplay();
+        });
+        
+        function checkLoginStatus() {
+            const user = localStorage.getItem('currentUser');
+            if(user) {
+                const userData = JSON.parse(user);
+                $('#sidebarUsername').text(userData.name || 'Usuario');
+            } else {
+                // Redirigir a login si no hay sesión
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: events.map(event => ({
+                    id: event.id,
+                    title: event.title,
+                    start: new Date(event.start),
+                    end: event.end ? new Date(event.end) : null,
+                    color: event.color
+                })),
+                eventClick: function(info) {
+                    showEventDetails(info.event);
+                },
+                dateClick: function(info) {
+                    $('#addEventModal').modal('show');
+                    $('#eventStartDate').val(info.dateStr + 'T08:00');
+                    $('#eventEndDate').val(info.dateStr + 'T09:00');
+                }
+            });
+            calendar.render();
+            
+            // Guardar referencia al calendario
+            window.calendar = calendar;
+        }
+        
+        function loadTasks() {
+            const taskList = $('#taskList');
+            taskList.empty();
+            
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            
+            tasks.forEach(task => {
+                let dueText = '';
+                let badgeClass = 'secondary';
+                
+                if(task.dueDate === today) {
+                    dueText = 'Hoy';
+                    badgeClass = 'primary';
+                } else if(task.dueDate === tomorrow) {
+                    dueText = 'Mañana';
+                    badgeClass = 'warning';
+                } else if(new Date(task.dueDate) < new Date(today)) {
+                    dueText = 'Atrasada';
+                    badgeClass = 'danger';
+                } else if(task.completed) {
+                    dueText = 'Completada';
+                    badgeClass = 'success';
+                }
+                
+                const taskItem = $(`
+                    <li class="list-group-item d-flex justify-content-between align-items-center" data-task-id="${task.id}">
+                        <div class="form-check">
+                            <input class="form-check-input task-checkbox" type="checkbox" id="task-${task.id}" ${task.completed ? 'checked' : ''}>
+                            <label class="form-check-label ${task.completed ? 'task-completed' : ''}" for="task-${task.id}">${task.title}</label>
+                        </div>
+                        <div>
+                            ${dueText ? `<span class="badge bg-${badgeClass} me-1">${dueText}</span>` : ''}
+                            <button class="btn btn-sm btn-outline-danger delete-task-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </li>
+                `);
+                
+                taskList.append(taskItem);
+            });
+        }
+        
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Tareas de hoy
+            const todayTasks = tasks.filter(task => task.dueDate === today);
+            const completedTasks = todayTasks.filter(task => task.completed).length;
+            
+            $('#tasksTodayCount').text(todayTasks.length);
+            $('#tasksTodayProgress').css('width', todayTasks.length > 0 ? (completedTasks / todayTasks.length * 100) + '%' : '0%');
+            $('#tasksTodayText').text(`${completedTasks}/${todayTasks.length} completadas`);
+            
+            // Eventos de hoy
+            const todayEvents = events.filter(event => {
+                const eventDate = new Date(event.start).toISOString().split('T')[0];
+                return eventDate === today;
+            });
+            
+            $('#eventsTodayCount').text(todayEvents.length);
+            
+            // Encontrar próximo evento
+            const now = new Date();
+            const upcomingEvents = events.filter(event => new Date(event.start) > now);
+            if(upcomingEvents.length > 0) {
+                const nextEvent = upcomingEvents.reduce((prev, current) => 
+                    new Date(prev.start) < new Date(current.start) ? prev : current
+                );
+                
+                const eventTime = new Date(nextEvent.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                $('#nextEventText').text(`${nextEvent.title} a las ${eventTime}`);
+            } else {
+                $('#nextEventText').text('Ninguno');
+            }
+            
+            // Tiempo productivo (simulado)
+            const productiveHours = Math.floor(Math.random() * 4);
+            const productiveMinutes = Math.floor(Math.random() * 60);
+            $('#productiveTime').text(`${productiveHours}h ${productiveMinutes}m`);
+            $('#productiveTimeProgress').css('width', (productiveHours / 4 * 100) + '%');
+            
+            // Pomodoros completados
+            $('#pomodorosToday').text(pomodoroSessionsCompleted);
+            $('#pomodorosProgress').css('width', (pomodoroSessionsCompleted / 6 * 100) + '%');
+            $('#pomodorosSessions').text(pomodoroSessionsCompleted);
+        }
+        
+        function setupEventListeners() {
+            // Modo oscuro
+            $('#sidebarDarkModeToggle').click(function(e) {
+                e.preventDefault();
+                toggleDarkMode();
+            });
+            
+            // Cerrar sesión
+            $('#sidebarLogoutBtn').click(function(e) {
+                e.preventDefault();
+                localStorage.removeItem('currentUser');
+                toastr.info('Has cerrado sesión correctamente');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            });
+            
+            // Alternar sidebar
+            $('#toggleSidebar').click(function() {
+                $('body').toggleClass('sidebar-collapsed');
+                const icon = $(this).find('i');
+                if($('body').hasClass('sidebar-collapsed')) {
+                    icon.removeClass('fa-chevron-left').addClass('fa-chevron-right');
+                } else {
+                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-left');
+                }
+                
+                // Redibujar el calendario cuando se cambia el tamaño del sidebar
+                if(window.calendar) {
+                    setTimeout(() => {
+                        window.calendar.updateSize();
+                    }, 300);
+                }
+            });
+            
+            // Guardar tarea
+            $('#saveTaskBtn').click(function() {
+                const title = $('#taskTitle').val();
+                const description = $('#taskDescription').val();
+                const dueDate = $('#taskDueDate').val();
+                const priority = $('#taskPriority').val();
+                const category = $('#taskCategory').val();
+                
+                if(!title) {
+                    toastr.error('El título es requerido');
+                    return;
+                }
+                
+                const newTask = {
+                    id: tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+                    title: title,
+                    description: description,
+                    dueDate: dueDate || new Date().toISOString().split('T')[0],
+                    priority: priority,
+                    category: category,
+                    completed: false
+                };
+                
+                tasks.push(newTask);
+                loadTasks();
+                updateStats();
+                $('#addTaskModal').modal('hide');
+                $('#addTaskForm')[0].reset();
+                toastr.success('Tarea agregada correctamente');
+            });
+            
+            // Eliminar tarea
+            $(document).on('click', '.delete-task-btn', function() {
+                const taskId = parseInt($(this).closest('li').data('task-id'));
+                tasks = tasks.filter(task => task.id !== taskId);
+                loadTasks();
+                updateStats();
+                toastr.success('Tarea eliminada');
+            });
+            
+            // Marcar tarea como completada
+            $(document).on('change', '.task-checkbox', function() {
+                const taskId = parseInt($(this).closest('li').data('task-id'));
+                const task = tasks.find(t => t.id === taskId);
+                
+                if(task) {
+                    task.completed = $(this).is(':checked');
+                    loadTasks();
+                    updateStats();
+                    
+                    if(task.completed) {
+                        toastr.success('¡Tarea completada!');
+                    }
+                }
+            });
+            
+            // Buscar tareas
+            $('#taskSearchBtn').click(searchTasks);
+            $('#taskSearchInput').keypress(function(e) {
+                if(e.which === 13) { // Enter key
+                    searchTasks();
+                }
+            });
+            
+            // Guardar evento
+            $('#saveEventBtn').click(function() {
+                const title = $('#eventTitle').val();
+                const description = $('#eventDescription').val();
+                const startDate = $('#eventStartDate').val();
+                const endDate = $('#eventEndDate').val();
+                const color = $('#eventColor').val();
+                
+                if(!title || !startDate) {
+                    toastr.error('El título y fecha de inicio son requeridos');
+                    return;
+                }
+                
+                const newEvent = {
+                    id: events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1,
+                    title: title,
+                    description: description,
+                    start: new Date(startDate).getTime(),
+                    end: endDate ? new Date(endDate).getTime() : null,
+                    color: color
+                };
+                
+                events.push(newEvent);
+                
+                // Actualizar calendario
+                if(window.calendar) {
+                    window.calendar.addEvent({
+                        id: newEvent.id,
+                        title: newEvent.title,
+                        start: new Date(newEvent.start),
+                        end: newEvent.end ? new Date(newEvent.end) : null,
+                        color: newEvent.color
+                    });
+                }
+                
+                updateStats();
+                $('#addEventModal').modal('hide');
+                $('#addEventForm')[0].reset();
+                toastr.success('Evento agregado correctamente');
+            });
+            
+            // Eliminar evento
+            $('#deleteEventBtn').click(function() {
+                const eventId = parseInt($(this).data('event-id'));
+                events = events.filter(event => event.id !== eventId);
+                
+                // Actualizar calendario
+                if(window.calendar) {
+                    const calendarEvent = window.calendar.getEventById(eventId.toString());
+                    if(calendarEvent) {
+                        calendarEvent.remove();
+                    }
+                }
+                
+                updateStats();
+                $('#eventModal').modal('hide');
+                toastr.success('Evento eliminado');
+            });
+            
+            // Pomodoro Timer
+            $('#pomodoroStart').click(startPomodoro);
+            $('#pomodoroPause').click(pausePomodoro);
+            $('#pomodoroReset').click(resetPomodoro);
+            $('#pomodoroWork').click(() => setPomodoroMode('work'));
+            $('#pomodoroShortBreak').click(() => setPomodoroMode('shortBreak'));
+            $('#pomodoroLongBreak').click(() => setPomodoroMode('longBreak'));
+        }
+        
+        function searchTasks() {
+            const searchTerm = $('#taskSearchInput').val().toLowerCase();
+            
+            if(!searchTerm) {
+                loadTasks();
+                return;
+            }
+            
+            const filteredTasks = tasks.filter(task => 
+                task.title.toLowerCase().includes(searchTerm) || 
+                (task.description && task.description.toLowerCase().includes(searchTerm))
+            );
+            
+            const taskList = $('#taskList');
+            taskList.empty();
+            
+            filteredTasks.forEach(task => {
+                const taskItem = $(`
+                    <li class="list-group-item d-flex justify-content-between align-items-center" data-task-id="${task.id}">
+                        <div class="form-check">
+                            <input class="form-check-input task-checkbox" type="checkbox" id="task-${task.id}" ${task.completed ? 'checked' : ''}>
+                            <label class="form-check-label ${task.completed ? 'task-completed' : ''}" for="task-${task.id}">${task.title}</label>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-danger delete-task-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </li>
+                `);
+                
+                taskList.append(taskItem);
+            });
+        }
+        
+        function showEventDetails(event) {
+            const eventData = events.find(e => e.id === parseInt(event.id));
+            
+            if(!eventData) return;
+            
+            $('#eventModalTitle').text(event.title);
+            
+            let eventHtml = `
+                <p><strong>Descripción:</strong> ${eventData.description || 'Ninguna'}</p>
+                <p><strong>Inicio:</strong> ${event.start.toLocaleString()}</p>
+            `;
+            
+            if(event.end) {
+                eventHtml += `<p><strong>Fin:</strong> ${event.end.toLocaleString()}</p>`;
+            }
+            
+            $('#eventModalBody').html(eventHtml);
+            $('#deleteEventBtn').data('event-id', event.id);
+            $('#eventModal').modal('show');
+        }
+        
+        function toggleDarkMode() {
+            if($('body').hasClass('dark-mode')) {
+                disableDarkMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+        
+        function enableDarkMode() {
+            $('body').addClass('dark-mode');
+            localStorage.setItem('darkMode', 'enabled');
+            $('#sidebarDarkModeText').text('Modo Claro');
+            
+            // Cambiar tema de FullCalendar
+            if(window.calendar) {
+                window.calendar.setOption('themeSystem', 'standard');
+            }
+        }
+        
+        function disableDarkMode() {
+            $('body').removeClass('dark-mode');
+            localStorage.setItem('darkMode', 'disabled');
+            $('#sidebarDarkModeText').text('Modo Oscuro');
+            
+            // Cambiar tema de FullCalendar
+            if(window.calendar) {
+                window.calendar.setOption('themeSystem', 'standard');
+            }
+        }
+        
+        // Funciones del Pomodoro Timer
+        function setPomodoroMode(mode) {
+            pomodoroMode = mode;
+            resetPomodoro();
+            
+            switch(mode) {
+                case 'work':
+                    pomodoroTimeLeft = 25 * 60;
+                    $('#pomodoroWork').addClass('active').siblings().removeClass('active');
+                    break;
+                case 'shortBreak':
+                    pomodoroTimeLeft = 5 * 60;
+                    $('#pomodoroShortBreak').addClass('active').siblings().removeClass('active');
+                    break;
+                case 'longBreak':
+                    pomodoroTimeLeft = 15 * 60;
+                    $('#pomodoroLongBreak').addClass('active').siblings().removeClass('active');
+                    break;
+            }
+            
+            updatePomodoroDisplay();
+        }
+        
+        function startPomodoro() {
+            if(isPomodoroRunning) return;
+            
+            isPomodoroRunning = true;
+            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+            $('#pomodoroStart').prop('disabled', true);
+            $('#pomodoroPause').prop('disabled', false);
+        }
+        
+        function pausePomodoro() {
+            if(!isPomodoroRunning) return;
+            
+            isPomodoroRunning = false;
+            clearInterval(pomodoroInterval);
+            $('#pomodoroStart').prop('disabled', false);
+            $('#pomodoroPause').prop('disabled', true);
+        }
+        
+        function resetPomodoro() {
+            pausePomodoro();
+            
+            switch(pomodoroMode) {
+                case 'work':
+                    pomodoroTimeLeft = 25 * 60;
+                    break;
+                case 'shortBreak':
+                    pomodoroTimeLeft = 5 * 60;
+                    break;
+                case 'longBreak':
+                    pomodoroTimeLeft = 15 * 60;
+                    break;
+            }
+            
+            updatePomodoroDisplay();
+            $('#pomodoroStart').prop('disabled', false);
+            $('#pomodoroPause').prop('disabled', true);
+        }
+        
+        function updatePomodoroTimer() {
+            pomodoroTimeLeft--;
+            updatePomodoroDisplay();
+            
+            if(pomodoroTimeLeft <= 0) {
+                clearInterval(pomodoroInterval);
+                isPomodoroRunning = false;
+                
+                // Reproducir sonido de alarma (simulado con toast)
+                if(pomodoroMode === 'work') {
+                    pomodoroSessionsCompleted++;
+                    $('#pomodorosToday').text(pomodoroSessionsCompleted);
+                    $('#pomodorosProgress').css('width', (pomodoroSessionsCompleted / 6 * 100) + '%');
+                    $('#pomodoroSessions').text(pomodoroSessionsCompleted);
+                    
+                    if(pomodoroSessionsCompleted % 4 === 0) {
+                        toastr.info('¡Sesión de trabajo completada! Toma un descanso largo.');
+                        setPomodoroMode('longBreak');
+                    } else {
+                        toastr.info('¡Sesión de trabajo completada! Toma un descanso corto.');
+                        setPomodoroMode('shortBreak');
+                    }
+                } else {
+                    toastr.info('¡Descanso terminado! Prepárate para la siguiente sesión de trabajo.');
+                    setPomodoroMode('work');
+                }
+                
+                startPomodoro();
+            }
+        }
+        
+        function updatePomodoroDisplay() {
+            const minutes = Math.floor(pomodoroTimeLeft / 60);
+            const seconds = pomodoroTimeLeft % 60;
+            $('#pomodoroTimer').text(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+        }
+        
+        // Configuración de toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "timeOut": "5000"
+        };
+    </script>
+</body>
+</html>
