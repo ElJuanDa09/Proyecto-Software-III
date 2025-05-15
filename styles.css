@@ -1,4 +1,4 @@
-<style>
+.pagina-index{
         :root {
             --primary-color: #0d6efd;
             --secondary-color: #6c757d;
@@ -7,8 +7,9 @@
             --card-bg: #ffffff;
             --footer-bg: #0d6efd;
         }
-        
-        .dark-mode {
+}
+.pagina-index.dark-mode {
+        {
             --primary-color: #0d6efd;
             --secondary-color: #6c757d;
             --background-color: #121212;
@@ -17,32 +18,32 @@
             --footer-bg: #000000;
         }
         
-        body {
+.pagina-index body {
             background-color: var(--background-color);
             color: var(--text-color);
             transition: all 0.3s ease;
         }
         
-        .navbar, .hero-section, footer {
+.pagina-index.navbar, .hero-section, footer {
             background-color: var(--primary-color) !important;
         }
         
-        .card {
+.pagina-index  .card {
             background-color: var(--card-bg);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid rgba(0,0,0,0.125);
         }
         
-        .card:hover {
+.pagina-index .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         
-        footer {
+.pagina-index footer {
             background-color: var(--footer-bg) !important;
         }
         
-        .feature-icon {
+.pagina-index.feature-icon {
             width: 70px;
             height: 70px;
             display: flex;
@@ -50,17 +51,17 @@
             justify-content: center;
         }
         
-        .login-modal .modal-content {
+.pagina-index.login-modal .modal-content {
             background-color: var(--card-bg);
             color: var(--text-color);
         }
         
-        .settings-modal .modal-content {
+.pagina-index.settings-modal .modal-content {
             background-color: var(--card-bg);
             color: var(--text-color);
         }
         
-        .progress-bar {
+.pagina-index.progress-bar {
             transition: width 1s ease-in-out;
         }
         
@@ -70,26 +71,25 @@
             to { opacity: 1; }
         }
         
-        .fade-in {
+.pagina-index.fade-in {
             animation: fadeIn 0.5s ease-in;
         }
         
         /* Estilo para el switcher de modo oscuro */
-        .switch {
+.pagina-index.switch {
             position: relative;
             display: inline-block;
             width: 60px;
             height: 34px;
         }
         
-        .switch input {
+.pagina-index.switch input {
             opacity: 0;
             width: 0;
             height: 0;
         }
         
-        .slider {
-            position: absolute;
+.pagina-index  position: absolute;
             cursor: pointer;
             top: 0;
             left: 0;
@@ -100,7 +100,7 @@
             border-radius: 34px;
         }
         
-        .slider:before {
+.pagina-index.slider:before {
             position: absolute;
             content: "";
             height: 26px;
@@ -112,11 +112,11 @@
             border-radius: 50%;
         }
         
-        input:checked + .slider {
+.pagina-index input:checked + .slider {
             background-color: #2196F3;
         }
         
-        input:checked + .slider:before {
+.pagina-indexinput:checked + .slider:before {
             transform: translateX(26px);
         }
-    </style>
+
