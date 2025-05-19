@@ -1,515 +1,73 @@
-.pagina-index{
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --background-color: #ffffff;
-            --text-color: #020202;
-            --card-bg: #ffffff;
-            --footer-bg: #0d6efd;
-        }
+/* =======================
+   Variables Globales
+========================== */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --background-color: #ffffff;
+    --text-color: #020202;
+    --card-bg: #ffffff;
+    --footer-bg: #0d6efd;
 }
-.pagina-index.dark-mode {
-        
-            --primary-color: #0d6efd;
-            --secondary-color :  #6c757d;
-            --background-color: #121212;
-            --text-color: #f8f9fa;
-            --card-bg: #1e1e1e;
-            --footer-bg: #000000;
-        }
-        
-.pagina-index body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-        
-.pagina-index.navbar, .hero-section, footer {
-            background-color: var(--primary-color) !important;
-        }
-        
-.pagina-index  .card {
-            background-color: var(--card-bg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.125);
-        }
-        
-.pagina-index .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
+
+/* =======================
+   Modo Oscuro
+========================== */
+body.dark-mode {
+    --background-color: #121212;
+    --text-color: #f8f9fa;
+    --card-bg: #1e1e1e;
+    --footer-bg: #000000;
+}
+
+/* =======================
+   Estilos Comunes
+========================== */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* =======================
+   Estilos Específicos por Página
+========================== */
+
+/* Página de Inicio */
+.pagina-index .navbar,
+.pagina-index .hero-section,
 .pagina-index footer {
-            background-color: var(--footer-bg) !important;
-        }
-        
-.pagina-index.feature-icon {
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-.pagina-index.login-modal .modal-content {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-        }
-        
-.pagina-index.settings-modal .modal-content {
-            background-color: var(--card-bg);
-            color: var(--text-color);
-        }
-        
-.pagina-index.progress-bar {
-            transition: width 1s ease-in-out;
-        }
-        
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-.pagina-index.fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        /* Estilo para el switcher de modo oscuro */
-.pagina-index.switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        
-.pagina-index.switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-.pagina-index.position:absolute{
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-    }
-        
-.pagina-index.slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-.pagina-index input:checked + .slider {
-            background-color: #2196F3;
-        }
-        
-.pagina-indexinput:checked + .slider:before {
-            transform: translateX(26px);
-        }
-.pagina-agenda{
-        :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --background-color: #ffffff;
-            --text-color: #212529;
-            --card-bg: #ffffff;
-            --sidebar-bg: #f8f9fa;
-        }
+    background-color: var(--primary-color) !important;
 }
-.pagina-agenda.dark-mode {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --background-color: #121212;
-            --text-color: #f8f9fa;
-            --card-bg: #1e1e1e;
-            --sidebar-bg: #2d2d2d;
-        }
-        
-.pagina-agenda body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-        
-.pagina-agenda.navbar, .sidebar {
-            background-color: var(--primary-color) !important;
-        }
-        
-.pagina-agenda.card {
-            background-color: var(--card-bg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.125);
-        }
-        
-.pagina-agenda .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-.pagina-agenda.sidebar {
-            background-color: var(--sidebar-bg);
-            height: 100vh;
-            position: fixed;
-            width: 250px;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-        
- .pagina-agenda.main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
-        
-.pagina-agenda.sidebar-collapsed .sidebar {
-            width: 80px;
-        }
-        
-.pagina-agenda.sidebar-collapsed .main-content {
-            margin-left: 80px;
-        }
-        
-.pagina-agenda.sidebar-link {
-            color: var(--text-color);
-            border-radius: 5px;
-            margin-bottom: 5px;
-            transition: all 0.3s;
-        }
-        
-.pagina-agenda.sidebar-link:hover {
-            background-color: rgba(0,0,0,0.1);
-        }
-        
-.pagina-agenda.sidebar-link.active {
-            background-color: var(--primary-color);
-            color: white !important;
-        }
-        
-.pagina-agenda.sidebar-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        
-.pagina-agenda.sidebar-collapsed .sidebar-link span {
-            display: none;
-        }
-        
-.pagina-agenda.sidebar-collapsed .sidebar-link i {
-            margin-right: 0;
-            font-size: 1.2rem;
-        }
-        
-.pagina-agenda.sidebar-collapsed .sidebar-link {
-            text-align: center;
-            padding: 10px 5px;
-        }
-        
-.pagina-agenda.task-completed {
-            text-decoration: line-through;
-            opacity: 0.7;
-        }
-        
-.pagina-agenda.pomodoro-timer {
-            font-size: 5rem;
-            font-weight: bold;
-            text-align: center;
-        }
-        
-.pagina-agenda.pomodoro-btn {
-            font-size: 1.2rem;
-            padding: 10px 25px;
-        }
-        
-.pagina-agenda.progress-bar {
-            transition: width 1s ease-in-out;
-        }
-        
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-.pagina-agenda.fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        /* Ajustes para FullCalendar */
-.pagina-agenda.fc .fc-toolbar-title {
-            font-size: 1.2rem;
-        }
-        
-.pagina-agenda.fc .fc-button {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-            }
-            
-        .pagina-agenda.main-content {
-                margin-left: 80px;
-            }
-            
-.pagina-agenda.sidebar-link span {
-                display: none;
-            }
-            
-.pagina-agenda.sidebar-link i {
-                margin-right: 0;
-                font-size: 1.2rem;
-            }
-            
-.pagina-agenda.sidebar-link {
-                text-align: center;
-                padding: 10px 5px;
-            }
-        }
 
-.pagina-finanzas{
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --dark-color: #2c3e50;
-            --light-color: #ecf0f1;
-        }
-    }
-.pagina-finanzas.dark-mode {
-        
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --background-color: #121212;
-            --text-color: #f8f9fa;
-            --card-bg: #1e1e1e;
-            --footer-bg: #000000;
-        }
-        
-.pagina-finanzas body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-        }
-        
-.pagina-finanzas.sidebar {
-            background-color: #0d6efd;
-            color: white;
-            height: 100vh;
-            position: fixed;
-            padding-top: 20px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        
-.pagina-finanzas.sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 5px;
-            border-radius: 5px;
-            padding: 10px 15px;
-        }
-        
-.pagina-finanzas.sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: #80b9e1;
-            color: white;
-        }
-        
-.pagina-finanzas.sidebar .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        
-.pagina-finanzas.main-content {
-            margin-left: 250px;
-            padding: 20px;
-        }
-        
-.pagina-finanzas.card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-        
-.pagina-finanzas.card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-.pagina-finanzas.card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            font-weight: 600;
-            padding: 15px 20px;
-        }
-        
-.pagina-finanzas.stat-card {
-            text-align: center;
-            padding: 20px;
-        }
-        
-.pagina-finanzas.stat-card .value {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-        
-.pagina-finanzas.stat-card .label {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-.pagina-finanzas.income-color {
-            color: var(--secondary-color);
-        }
-        
-.pagina-finanzas.expense-color {
-            color: var(--danger-color);
-        }
-        
-.pagina-finanzas.savings-color {
-            color: var(--primary-color);
-        }
-        
-.pagina-finanzas.budget-color {
-            color: var(--warning-color);
-        }
-        
-.pagina-finanzas.progress {
-            height: 10px;
-            border-radius: 5px;
-        }
-        
-.pagina-finanzas.progress-bar {
-            border-radius: 5px;
-        }
-        
-.pagina-finanzas.transaction-item {
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-.pagina-finanzas.transaction-item:last-child {
-            border-bottom: none;
-        }
-        
-.pagina-finanzas.transaction-category {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            margin-right: 15px;
-        }
-        
-.pagina-finanzas.category-food {
-            background-color: #e67e22;
-        }
-        
-.pagina-finanzas.category-transport {
-            background-color: #3498db;
-        }
-        
-.pagina-finanzas.category-housing {
-            background-color: #9b59b6;
-        }
-        
-.pagina-finanzas.category-entertainment {
-            background-color: #f1c40f;
-        }
-        
-.pagina-finanzas.category-shopping {
-            background-color: #1abc9c;
-        }
-        
-.pagina-finanzas.category-income {
-            background-color: #2ecc71;
-        }
-        
-.pagina-finanzas.category-other {
-            background-color: #95a5a6;
-        }
-        
-.pagina-finanzas.btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-.pagina-finanzas.btn-success {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        
-.pagina-finanzas.btn-danger {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-        
-.pagina-finanzas.alert-warning {
-            background-color: rgba(243, 156, 18, 0.1);
-            border-color: rgba(243, 156, 18, 0.2);
-            color: #8e6c0f;
-        }
-        
-.pagina-finanzas.chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        
-.pagina-finanzas.search-bar {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        
-.pagina-finanzas.search-bar input {
-            padding-left: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        
-.pagina-finanzas.search-bar i {
-            position: absolute;
-            left: 15px;
-            top: 12px;
-            color: #95a5a6;
-        }
-        
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-        .pagina-finanzas.main-content {
-                margin-left: 0;
-            }
-        }
+.pagina-index .card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
 
+/* Página de Contacto */
+.pagina-contacto .formulario {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
 
+/* Página de Nosotros */
+.pagina-nosotros .seccion-equipo {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    padding: 2rem;
+}
 
+/* Footer general */
+footer {
+    background-color: var(--footer-bg);
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
