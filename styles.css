@@ -283,3 +283,232 @@
             }
         }
 }
+.pagina-finanzas{
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+.pagina-finanzas.dark-mode {
+        {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --background-color: #121212;
+            --text-color: #f8f9fa;
+            --card-bg: #1e1e1e;
+            --footer-bg: #000000;
+        }
+        
+.pagina-finanzas body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+.pagina-finanzas.sidebar {
+            background-color: #0d6efd;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+.pagina-finanzas.sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 5px;
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+        
+.pagina-finanzas.sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #80b9e1;
+            color: white;
+        }
+        
+.pagina-finanzas.sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+.pagina-finanzas.main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+.pagina-finanzas.card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+.pagina-finanzas.card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+.pagina-finanzas.card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+        
+.pagina-finanzas.stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        
+.pagina-finanzas.stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+.pagina-finanzas.stat-card .label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+.pagina-finanzas.income-color {
+            color: var(--secondary-color);
+        }
+        
+.pagina-finanzas.expense-color {
+            color: var(--danger-color);
+        }
+        
+.pagina-finanzas.savings-color {
+            color: var(--primary-color);
+        }
+        
+.pagina-finanzas.budget-color {
+            color: var(--warning-color);
+        }
+        
+.pagina-finanzas.progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+        
+.pagina-finanzas.progress-bar {
+            border-radius: 5px;
+        }
+        
+.pagina-finanzas.transaction-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+.pagina-finanzas.transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+.pagina-finanzas.transaction-category {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+        }
+        
+.pagina-finanzas.category-food {
+            background-color: #e67e22;
+        }
+        
+.pagina-finanzas.category-transport {
+            background-color: #3498db;
+        }
+        
+.pagina-finanzas.category-housing {
+            background-color: #9b59b6;
+        }
+        
+.pagina-finanzas.category-entertainment {
+            background-color: #f1c40f;
+        }
+        
+.pagina-finanzas.category-shopping {
+            background-color: #1abc9c;
+        }
+        
+.pagina-finanzas.category-income {
+            background-color: #2ecc71;
+        }
+        
+.pagina-finanzas.category-other {
+            background-color: #95a5a6;
+        }
+        
+.pagina-finanzas.btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+.pagina-finanzas.btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+.pagina-finanzas.btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+.pagina-finanzas.alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.2);
+            color: #8e6c0f;
+        }
+        
+.pagina-finanzas.chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+.pagina-finanzas.search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+.pagina-finanzas.search-bar input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+.pagina-finanzas.search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: #95a5a6;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+        .pagina-finanzas.main-content {
+                margin-left: 0;
+            }
+        }
+
+
+}
