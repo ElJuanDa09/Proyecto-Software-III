@@ -9,9 +9,9 @@
         }
 }
 .pagina-index.dark-mode {
-        {
+        
             --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
+            --secondary-color :  #6c757d;
             --background-color: #121212;
             --text-color: #f8f9fa;
             --card-bg: #1e1e1e;
@@ -89,7 +89,7 @@
             height: 0;
         }
         
-.pagina-index  position: absolute;
+.pagina-index.position:absolute{
             cursor: pointer;
             top: 0;
             left: 0;
@@ -98,7 +98,7 @@
             background-color: #ccc;
             transition: .4s;
             border-radius: 34px;
-        }
+    }
         
 .pagina-index.slider:before {
             position: absolute;
@@ -282,7 +282,7 @@
                 padding: 10px 5px;
             }
         }
-}
+
 .pagina-finanzas{
         :root {
             --primary-color: #3498db;
@@ -292,8 +292,9 @@
             --dark-color: #2c3e50;
             --light-color: #ecf0f1;
         }
+    }
 .pagina-finanzas.dark-mode {
-        {
+        
             --primary-color: #0d6efd;
             --secondary-color: #6c757d;
             --background-color: #121212;
@@ -511,4 +512,4 @@
         }
 
 
-}
+
