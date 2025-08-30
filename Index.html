@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,137 @@
     <!-- Toastr CSS para notificaciones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --background-color: #ffffff;
+            --text-color: #020202;
+            --card-bg: #ffffff;
+            --footer-bg: #0d6efd;
+        }
+
+        .dark-mode {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --background-color: #121212;
+            --text-color: #f8f9fa;
+            --card-bg: #1e1e1e;
+            --footer-bg: #000000;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar,
+        .hero-section,
+        footer {
+            background-color: var(--primary-color) !important;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: var(--footer-bg) !important;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-modal .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .settings-modal .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        /* Estilo para el switcher de modo oscuro */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 </head>
+
 <body>
     <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -23,27 +153,38 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="fas fa-calendar-alt"></i> Agenda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="finanzas.html"><i class="fas fa-wallet"></i> Finanzas</a></li>
-                    <li class="nav-item"><a class="nav-link" href="academico.html"><i class="fas fa-book"></i> Académico</a></li>
-                    <li class="nav-item"><a class="nav-link" href="herramientas.html"><i class="fas fa-tools"></i> Herramientas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="agenda.html"><i class="fas fa-calendar-alt"></i>
+                            Agenda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="finanzas.html"><i class="fas fa-wallet"></i>
+                            Finanzas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="academico.html"><i class="fas fa-book"></i>
+                            Académico</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html"><i class="fas fa-tools"></i>
+                            Herramientas</a></li>
                 </ul>
                 <div class="d-flex">
                     <button class="btn btn-light me-2" id="notificationBtn">
                         <i class="fas fa-bell"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            id="notificationBadge">
                             0
                         </span>
                     </button>
                     <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown">
                             <i class="fas fa-user"></i> <span id="usernameDisplay">Perfil</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fas fa-cog"></i> Configuración</a></li>
-                            <li><a class="dropdown-item" href="#" id="darkModeToggle"><i class="fas fa-moon"></i> <span id="darkModeText">Modo Oscuro</span></a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#settingsModal"><i class="fas fa-cog"></i> Configuración</a></li>
+                            <li><a class="dropdown-item" href="#" id="darkModeToggle"><i class="fas fa-moon"></i> <span
+                                        id="darkModeText">Modo Oscuro</span></a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>
+                                    Cerrar Sesión</a></li>
                         </ul>
                     </div>
                 </div>
@@ -107,11 +248,13 @@
                             <label class="form-label">Notificaciones</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="notificacionesEmail" checked>
-                                <label class="form-check-label" for="notificacionesEmail">Recibir notificaciones por email</label>
+                                <label class="form-check-label" for="notificacionesEmail">Recibir notificaciones por
+                                    email</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="notificacionesApp" checked>
-                                <label class="form-check-label" for="notificacionesApp">Recibir notificaciones en la app</label>
+                                <label class="form-check-label" for="notificacionesApp">Recibir notificaciones en la
+                                    app</label>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -233,11 +376,13 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
-                            <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto">
+                            <div
+                                class="feature-icon bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 mx-auto">
                                 <i class="fas fa-calendar-alt fa-2x"></i>
                             </div>
                             <h5 class="card-title">Gestión del Tiempo</h5>
-                            <p class="card-text">Agenda, calendario, Pomodoro timer y lista de tareas para organizar tu tiempo eficientemente.</p>
+                            <p class="card-text">Agenda, calendario, Pomodoro timer y lista de tareas para organizar tu
+                                tiempo eficientemente.</p>
                             <a href="agenda.html" class="btn btn-outline-primary">Explorar</a>
                         </div>
                     </div>
@@ -245,11 +390,13 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
-                            <div class="feature-icon bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 mx-auto">
+                            <div
+                                class="feature-icon bg-success bg-opacity-10 text-success rounded-circle p-3 mb-3 mx-auto">
                                 <i class="fas fa-wallet fa-2x"></i>
                             </div>
                             <h5 class="card-title">Gestión Financiera</h5>
-                            <p class="card-text">Registro de gastos, presupuestos, análisis financiero y alertas para controlar tus finanzas.</p>
+                            <p class="card-text">Registro de gastos, presupuestos, análisis financiero y alertas para
+                                controlar tus finanzas.</p>
                             <a href="finanzas.html" class="btn btn-outline-success">Explorar</a>
                         </div>
                     </div>
@@ -261,7 +408,8 @@
                                 <i class="fas fa-book fa-2x"></i>
                             </div>
                             <h5 class="card-title">Gestión Académica</h5>
-                            <p class="card-text">Materias, horarios, calculadora de notas, apuntes y seguimiento de tu progreso académico.</p>
+                            <p class="card-text">Materias, horarios, calculadora de notas, apuntes y seguimiento de tu
+                                progreso académico.</p>
                             <a href="academico.html" class="btn btn-outline-info">Explorar</a>
                         </div>
                     </div>
@@ -269,11 +417,13 @@
                 <div class="col-md-6 col-lg-3">
                     <div class="card h-100">
                         <div class="card-body text-center">
-                            <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-circle p-3 mb-3 mx-auto">
+                            <div
+                                class="feature-icon bg-warning bg-opacity-10 text-warning rounded-circle p-3 mb-3 mx-auto">
                                 <i class="fas fa-tools fa-2x"></i>
                             </div>
                             <h5 class="card-title">Herramientas Extra</h5>
-                            <p class="card-text">Organizador de proyectos, repositorio de documentos, comunidad y consejos de bienestar.</p>
+                            <p class="card-text">Organizador de proyectos, repositorio de documentos, comunidad y
+                                consejos de bienestar.</p>
                             <a href="herramientas.html" class="btn btn-outline-warning">Explorar</a>
                         </div>
                     </div>
@@ -288,12 +438,16 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0">
                     <h2 class="mb-4">Organiza tu vida universitaria</h2>
-                    <p class="lead">Eduplan es una plataforma diseñada específicamente para estudiantes universitarios que necesitan manejar múltiples aspectos de su vida académica y personal en un solo lugar.</p>
-                    <p>Desde el control de tus horarios y tareas hasta la gestión de tus finanzas y el seguimiento de tu progreso académico, Eduplan te ofrece todas las herramientas que necesitas para tener éxito en tu vida universitaria.</p>
+                    <p class="lead">Eduplan es una plataforma diseñada específicamente para estudiantes universitarios
+                        que necesitan manejar múltiples aspectos de su vida académica y personal en un solo lugar.</p>
+                    <p>Desde el control de tus horarios y tareas hasta la gestión de tus finanzas y el seguimiento de tu
+                        progreso académico, Eduplan te ofrece todas las herramientas que necesitas para tener éxito en
+                        tu vida universitaria.</p>
                     <a href="agenda.html" class="btn btn-primary mt-3">Empieza ahora</a>
                 </div>
                 <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Estudiante universitario" class="img-fluid rounded shadow">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+                        alt="Estudiante universitario" class="img-fluid rounded shadow">
                 </div>
             </div>
         </div>
@@ -354,9 +508,11 @@
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                             </div>
-                            <p class="card-text">"Eduplan ha transformado completamente cómo organizo mi tiempo en la universidad. ¡Ya no se me pasan las fechas de entrega!"</p>
+                            <p class="card-text">"Eduplan ha transformado completamente cómo organizo mi tiempo en la
+                                universidad. ¡Ya no se me pasan las fechas de entrega!"</p>
                             <div class="d-flex align-items-center mt-3">
-                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Usuario" class="rounded-circle me-3" width="50">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Usuario"
+                                    class="rounded-circle me-3" width="50">
                                 <div>
                                     <h6 class="mb-0">María González</h6>
                                     <small class="text-muted">Estudiante de Derecho</small>
@@ -375,9 +531,11 @@
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
                             </div>
-                            <p class="card-text">"La calculadora de notas me salvó en el semestre pasado. Sabía exactamente qué necesitaba en cada examen para pasar mis materias."</p>
+                            <p class="card-text">"La calculadora de notas me salvó en el semestre pasado. Sabía
+                                exactamente qué necesitaba en cada examen para pasar mis materias."</p>
                             <div class="d-flex align-items-center mt-3">
-                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Usuario" class="rounded-circle me-3" width="50">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Usuario"
+                                    class="rounded-circle me-3" width="50">
                                 <div>
                                     <h6 class="mb-0">Carlos Martínez</h6>
                                     <small class="text-muted">Estudiante de Ingeniería</small>
@@ -396,9 +554,11 @@
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star-half-alt"></i>
                             </div>
-                            <p class="card-text">"Por fin puedo controlar mis gastos mensuales. Las alertas me ayudan a no exceder mi presupuesto en comida y transporte."</p>
+                            <p class="card-text">"Por fin puedo controlar mis gastos mensuales. Las alertas me ayudan a
+                                no exceder mi presupuesto en comida y transporte."</p>
                             <div class="d-flex align-items-center mt-3">
-                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Usuario" class="rounded-circle me-3" width="50">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Usuario"
+                                    class="rounded-circle me-3" width="50">
                                 <div>
                                     <h6 class="mb-0">Ana Rodríguez</h6>
                                     <small class="text-muted">Estudiante de Medicina</small>
@@ -474,40 +634,40 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Toastr JS para notificaciones -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+
     <!-- Scripts personalizados -->
     <script>
         // Verificar si hay una sesión activa al cargar la página
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Verificar modo oscuro en localStorage
-            if(localStorage.getItem('darkMode') === 'enabled') {
+            if (localStorage.getItem('darkMode') === 'enabled') {
                 enableDarkMode();
             }
-            
+
             // Verificar si el usuario está logueado
             checkLoginStatus();
-            
+
             // Animación de contadores
             animateCounters();
-            
+
             // Configurar event listeners
             setupEventListeners();
-            
+
             // Mostrar animación de carga inicial
             showLoadingAnimation();
         });
-        
+
         function showLoadingAnimation() {
             // Simular carga de contenido
-            setTimeout(function() {
+            setTimeout(function () {
                 $('body').addClass('loaded');
             }, 1000);
         }
-        
+
         function checkLoginStatus() {
             // Verificar si hay un usuario logueado en localStorage
             const user = localStorage.getItem('currentUser');
-            if(user) {
+            if (user) {
                 const userData = JSON.parse(user);
                 $('#usernameDisplay').text(userData.name);
                 // Mostrar botón de logout y ocultar login
@@ -521,7 +681,7 @@
                 // $('#loginModal').modal('show');
             }
         }
-        
+
         function animateCounters() {
             // Animación para los contadores de estadísticas
             const counters = [
@@ -530,192 +690,192 @@
                 { element: '#hoursSaved', target: 250000, duration: 3000 },
                 { element: '#universitiesCount', target: 150, duration: 1500 }
             ];
-            
+
             counters.forEach(counter => {
                 const { element, target, duration } = counter;
                 const increment = target / (duration / 16); // 60fps
                 let current = 0;
-                
+
                 const updateCounter = () => {
                     current += increment;
-                    if(current < target) {
+                    if (current < target) {
                         $(element).text(Math.floor(current).toLocaleString());
                         requestAnimationFrame(updateCounter);
                     } else {
                         $(element).text(target.toLocaleString());
                     }
                 };
-                
+
                 // Iniciar animación cuando el elemento es visible
                 const observer = new IntersectionObserver((entries) => {
-                    if(entries[0].isIntersecting) {
+                    if (entries[0].isIntersecting) {
                         updateCounter();
                         observer.unobserve($(element)[0]);
                     }
                 });
-                
+
                 observer.observe($(element)[0]);
             });
         }
-        
+
         function setupEventListeners() {
             // Modo oscuro
-            $('#darkModeToggle').click(function(e) {
+            $('#darkModeToggle').click(function (e) {
                 e.preventDefault();
                 toggleDarkMode();
             });
-            
+
             // Configuración del switch en el modal
-            $('#darkModeSwitch').change(function() {
-                if(this.checked) {
+            $('#darkModeSwitch').change(function () {
+                if (this.checked) {
                     enableDarkMode();
                 } else {
                     disableDarkMode();
                 }
             });
-            
+
             // Notificaciones
-            $('#notificationBtn').click(function() {
+            $('#notificationBtn').click(function () {
                 $('#notificationsModal').modal('show');
             });
-            
-            $('#markAllAsRead').click(function() {
+
+            $('#markAllAsRead').click(function () {
                 $('#notificationBadge').text('0');
                 toastr.success('Todas las notificaciones marcadas como leídas');
                 $('#notificationsModal').modal('hide');
             });
-            
+
             // Guardar configuración
-            $('#saveSettings').click(function() {
+            $('#saveSettings').click(function () {
                 const username = $('#nombreUsuario').val();
                 $('#usernameDisplay').text(username);
-                
+
                 // Actualizar datos en localStorage
                 const user = localStorage.getItem('currentUser');
-                if(user) {
+                if (user) {
                     const userData = JSON.parse(user);
                     userData.name = username;
                     localStorage.setItem('currentUser', JSON.stringify(userData));
                 }
-                
+
                 toastr.success('Configuración guardada correctamente');
                 $('#settingsModal').modal('hide');
             });
-            
+
             // Login
-            $('#loginForm').submit(function(e) {
+            $('#loginForm').submit(function (e) {
                 e.preventDefault();
                 const email = $('#loginEmail').val();
                 const password = $('#loginPassword').val();
-                
+
                 // Validación simple (en un caso real, esto sería una llamada a un backend)
-                if(email && password) {
+                if (email && password) {
                     // Simular usuario
                     const userData = {
                         name: email.split('@')[0],
                         email: email
                     };
-                    
+
                     localStorage.setItem('currentUser', JSON.stringify(userData));
                     $('#loginModal').modal('hide');
                     checkLoginStatus();
                     toastr.success('Bienvenido de nuevo a Eduplan');
-                    
+
                     // Agregar notificación de bienvenida
                     $('#notificationBadge').text('1');
                 } else {
                     toastr.error('Por favor ingresa correo y contraseña válidos');
                 }
             });
-            
+
             // Registro
-            $('#registerForm').submit(function(e) {
+            $('#registerForm').submit(function (e) {
                 e.preventDefault();
                 const name = $('#registerName').val();
                 const email = $('#registerEmail').val();
                 const password = $('#registerPassword').val();
                 const confirmPassword = $('#registerConfirmPassword').val();
-                
-                if(password !== confirmPassword) {
+
+                if (password !== confirmPassword) {
                     toastr.error('Las contraseñas no coinciden');
                     return;
                 }
-                
-                if(password.length < 8) {
+
+                if (password.length < 8) {
                     toastr.error('La contraseña debe tener al menos 8 caracteres');
                     return;
                 }
-                
+
                 // Simular registro exitoso
                 const userData = {
                     name: name,
                     email: email
                 };
-                
+
                 localStorage.setItem('currentUser', JSON.stringify(userData));
                 $('#registerModal').modal('hide');
                 checkLoginStatus();
                 toastr.success('¡Bienvenido a Eduplan! Tu cuenta ha sido creada.');
-                
+
                 // Agregar notificación de bienvenida
                 $('#notificationBadge').text('1');
             });
-            
+
             // Cerrar sesión
-            $('#logoutBtn').click(function(e) {
+            $('#logoutBtn').click(function (e) {
                 e.preventDefault();
                 localStorage.removeItem('currentUser');
                 checkLoginStatus();
                 toastr.info('Has cerrado sesión correctamente');
                 window.location.href = 'index.html';
             });
-            
+
             // Alternar entre login y registro
-            $('#showRegister').click(function(e) {
+            $('#showRegister').click(function (e) {
                 e.preventDefault();
                 $('#loginModal').modal('hide');
                 $('#registerModal').modal('show');
             });
-            
-            $('#showLogin').click(function(e) {
+
+            $('#showLogin').click(function (e) {
                 e.preventDefault();
                 $('#registerModal').modal('hide');
                 $('#loginModal').modal('show');
             });
-            
+
             // Botón de registro en CTA
-            $('#registerNowBtn').click(function() {
+            $('#registerNowBtn').click(function () {
                 $('#registerModal').modal('show');
             });
-            
+
             // Botón de contacto
-            $('#contactBtn').click(function() {
+            $('#contactBtn').click(function () {
                 toastr.info('Por favor envía un email a soporte@eduplan.com');
             });
         }
-        
+
         function toggleDarkMode() {
-            if($('body').hasClass('dark-mode')) {
+            if ($('body').hasClass('dark-mode')) {
                 disableDarkMode();
             } else {
                 enableDarkMode();
             }
         }
-        
+
         function enableDarkMode() {
             $('body').addClass('dark-mode');
             localStorage.setItem('darkMode', 'enabled');
             $('#darkModeText').text('Modo Claro');
             $('#darkModeSwitch').prop('checked', true);
         }
-        
+
         function disableDarkMode() {
             $('body').removeClass('dark-mode');
             localStorage.setItem('darkMode', 'disabled');
             $('#darkModeText').text('Modo Oscuro');
             $('#darkModeSwitch').prop('checked', false);
         }
-        
+
         // Configuración de toastr
         toastr.options = {
             "closeButton": true,
@@ -725,4 +885,5 @@
         };
     </script>
 </body>
+
 </html>

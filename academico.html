@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPlan - Gestión Académica Integral</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --academic-blue: #0d6efd;
+            --academic-green: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .sidebar {
+            background-color: var(--academic-blue);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .gpa-color {
+            color: var(--academic-blue);
+        }
+
+        .progress-color {
+            color: var(--academic-green);
+        }
+
+        .pending-color {
+            color: var(--warning-color);
+        }
+
+        .failed-color {
+            color: var(--danger-color);
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            border-radius: 5px;
+        }
+
+        .subject-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .subject-item:last-child {
+            border-bottom: none;
+        }
+
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+            background-color: var(--academic-blue);
+        }
+
+        .schedule-day {
+            margin-bottom: 20px;
+        }
+
+        .schedule-class {
+            background-color: white;
+            border-left: 4px solid var(--academic-blue);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-primary {
+            background-color: var(--academic-blue);
+            border-color: var(--academic-blue);
+        }
+
+        .btn-success {
+            background-color: var(--academic-green);
+            border-color: var(--academic-green);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.2);
+            color: #8e6c0f;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: #95a5a6;
+        }
+
+        .note-card {
+            border-left: 4px solid var(--academic-blue);
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 4px;
+        }
+
+        .grade-A {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .grade-B {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .grade-C {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .grade-D {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .grade-F {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+
+        /* Calculator styles */
+        .calculator {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-display {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: right;
+            font-size: 1.5rem;
+            height: 60px;
+            overflow: auto;
+        }
+
+        .calculator-btn {
+            margin: 5px;
+            height: 50px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Toast Notifications -->
+    <div class="toast-container"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="text-center mb-4">
+                    <h4><i class="bi bi-journal-bookmark"></i> EduPlan</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="Index.html">
+                            <i class="bi bi-speedometer2"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="agenda.html">
+                            <i class="bi bi-book"></i> Agenda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="finanzas.html">
+                            <i class="bi bi-calendar-week"></i> Gestión financiera
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="herramientas.html">
+                            <i class="bi bi-calculator"></i> Herramientas extra
+                        </a>
+
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-md-9 col-lg-10 main-content">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Panel de Gestión Académica</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn"
+                                data-period="current">Actual</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn active"
+                                data-period="semester">Semestre</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn"
+                                data-period="year">Año</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#subjectModal">
+                            <i class="bi bi-plus"></i> Agregar Materia
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4" id="stats-cards">
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value gpa-color" id="gpa">0.0</div>
+                            <div class="label">Promedio (GPA)</div>
+                            <small class="text-primary" id="gpa-trend"><i class="bi bi-arrow-up"></i> 0% vs periodo
+                                anterior</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value progress-color" id="completed">0</div>
+                            <div class="label">Materias aprobadas</div>
+                            <small class="text-success" id="completed-trend"><i class="bi bi-arrow-up"></i> 0% vs
+                                periodo anterior</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value pending-color" id="in-progress">0</div>
+                            <div class="label">En progreso</div>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-warning" id="progress-bar" role="progressbar"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value failed-color" id="failed">0</div>
+                            <div class="label">Materias reprobadas</div>
+                            <small class="text-danger" id="failed-trend"><i class="bi bi-arrow-down"></i> 0% vs periodo
+                                anterior</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Subjects and Schedule -->
+                    <div class="col-lg-8">
+                        <!-- Current Subjects -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Materias Actuales</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown">
+                                        <i class="bi bi-funnel"></i> Filtros
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item filter-btn active" href="#"
+                                                data-filter="all">Todas</a></li>
+                                        <li><a class="dropdown-item filter-btn" href="#"
+                                                data-filter="approved">Aprobadas</a></li>
+                                        <li><a class="dropdown-item filter-btn" href="#" data-filter="progress">En
+                                                curso</a></li>
+                                        <li><a class="dropdown-item filter-btn" href="#"
+                                                data-filter="failed">Reprobadas</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="search-bar">
+                                    <i class="bi bi-search"></i>
+                                    <input type="text" class="form-control" id="subject-search"
+                                        placeholder="Buscar materias...">
+                                </div>
+
+                                <div id="subjects-list">
+                                    <div class="spinner-container">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Cargando...</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary" id="view-all-subjects">Ver todas
+                                        las materias</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule and Upcoming -->
+                    <div class="col-lg-4">
+                        <!-- Weekly Schedule -->
+                        <div class="card">
+                            <div class="card-header">
+                                Horario Semanal
+                            </div>
+                            <div class="card-body" id="schedule-container">
+                                <div class="spinner-container">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Tasks -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Próximas Actividades</span>
+                                <span class="badge bg-danger" id="tasks-count">0</span>
+                            </div>
+                            <div class="card-body" id="upcoming-tasks">
+                                <div class="text-center py-3">
+                                    <i class="bi bi-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
+                                    <p class="text-muted mt-2">No hay actividades próximas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Sections -->
+                <div class="row mt-4">
+                    <!-- Grade Calculator -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Calculadora de Notas
+                            </div>
+                            <div class="card-body">
+                                <div class="calculator">
+                                    <div class="calculator-display" id="grade-result">Selecciona una materia</div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <select class="form-select mb-3" id="subject-selector">
+                                                <option value="" selected disabled>Selecciona una materia</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary w-100" id="calculate-btn">Calcular</button>
+                                        </div>
+                                    </div>
+                                    <div id="grade-inputs"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Notes -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Apuntes Recientes</span>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#noteModal">
+                                    <i class="bi bi-plus"></i> Nuevo
+                                </button>
+                            </div>
+                            <div class="card-body" id="notes-list">
+                                <div class="text-center py-3">
+                                    <i class="bi bi-journal-text" style="font-size: 2rem; color: #ccc;"></i>
+                                    <p class="text-muted mt-2">No hay apuntes recientes</p>
+                                    <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal"
+                                        data-bs-target="#noteModal">
+                                        <i class="bi bi-plus"></i> Crear primer apunte
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div class="modal fade" id="subjectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Materia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="subject-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="subject-name" class="form-label">Nombre de la Materia</label>
+                            <input type="text" class="form-control" id="subject-name"
+                                placeholder="Ej: Matemáticas Avanzadas" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa el nombre de la materia
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject-code" class="form-label">Código</label>
+                            <input type="text" class="form-control" id="subject-code" placeholder="Ej: MAT-202">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject-credits" class="form-label">Créditos</label>
+                            <input type="number" class="form-control" id="subject-credits" min="1" value="3" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa la cantidad de créditos
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject-professor" class="form-label">Profesor</label>
+                            <input type="text" class="form-control" id="subject-professor"
+                                placeholder="Nombre del profesor">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject-status" class="form-label">Estado</label>
+                            <select class="form-select" id="subject-status" required>
+                                <option value="in_progress" selected>En curso</option>
+                                <option value="approved">Aprobada</option>
+                                <option value="failed">Reprobada</option>
+                                <option value="pending">Pendiente</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-subject">Guardar Materia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal fade" id="noteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Apunte</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="note-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="note-title" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="note-title"
+                                placeholder="Tema o título del apunte" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa un título
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-subject" class="form-label">Materia</label>
+                            <select class="form-select" id="note-subject" required>
+                                <option value="" selected disabled>Selecciona una materia</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Por favor selecciona una materia
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="note-content" class="form-label">Contenido</label>
+                            <textarea class="form-control" id="note-content" rows="8"
+                                placeholder="Escribe tus apuntes aquí..." required></textarea>
+                            <div class="invalid-feedback">
+                                Por favor escribe el contenido del apunte
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-note">Guardar Apunte</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Clase al Horario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="schedule-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="schedule-subject" class="form-label">Materia</label>
+                            <select class="form-select" id="schedule-subject" required>
+                                <option value="" selected disabled>Selecciona una materia</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Por favor selecciona una materia
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="schedule-day" class="form-label">Día</label>
+                            <select class="form-select" id="schedule-day" required>
+                                <option value="" selected disabled>Selecciona un día</option>
+                                <option value="monday">Lunes</option>
+                                <option value="tuesday">Martes</option>
+                                <option value="wednesday">Miércoles</option>
+                                <option value="thursday">Jueves</option>
+                                <option value="friday">Viernes</option>
+                                <option value="saturday">Sábado</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Por favor selecciona un día
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="schedule-start" class="form-label">Hora de inicio</label>
+                                <input type="time" class="form-control" id="schedule-start" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa la hora de inicio
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="schedule-end" class="form-label">Hora de fin</label>
+                                <input type="time" class="form-control" id="schedule-end" required>
+                                <div class="invalid-feedback">
+                                    Por favor ingresa la hora de fin
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="schedule-location" class="form-label">Lugar (Aula)</label>
+                            <input type="text" class="form-control" id="schedule-location" placeholder="Ej: Aula 302">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-schedule">Guardar Horario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos de la aplicación
+        let subjects = [];
+        let schedules = [];
+        let notes = [];
+        let currentPeriod = 'semester';
+        let currentFilter = 'all';
+
+        // Clases de ayuda
+        class Toast {
+            static show(message, type = 'success') {
+                const toastContainer = document.querySelector('.toast-container');
+                const toastId = 'toast-' + Date.now();
+
+                const toastEl = document.createElement('div');
+                toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+                toastEl.setAttribute('role', 'alert');
+                toastEl.setAttribute('aria-live', 'assertive');
+                toastEl.setAttribute('aria-atomic', 'true');
+                toastEl.id = toastId;
+
+                toastEl.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                `;
+
+                toastContainer.appendChild(toastEl);
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+
+                // Eliminar el toast después de que se oculte
+                toastEl.addEventListener('hidden.bs.toast', () => {
+                    toastEl.remove();
+                });
+            }
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cargar datos del localStorage
+            loadData();
+
+            // Inicializar event listeners
+            setupEventListeners();
+
+            // Mostrar datos iniciales
+            updateUI();
+        });
+
+        function loadData() {
+            try {
+                // Cargar materias
+                const storedSubjects = localStorage.getItem('academic-subjects');
+                subjects = storedSubjects ? JSON.parse(storedSubjects) : [];
+
+                // Cargar horarios
+                const storedSchedules = localStorage.getItem('academic-schedules');
+                schedules = storedSchedules ? JSON.parse(storedSchedules) : [];
+
+                // Cargar apuntes
+                const storedNotes = localStorage.getItem('academic-notes');
+                notes = storedNotes ? JSON.parse(storedNotes) : [];
+
+                // Si no hay datos, cargar ejemplos
+                if (subjects.length === 0 && schedules.length === 0 && notes.length === 0) {
+                    loadSampleData();
+                }
+            } catch (e) {
+                console.error('Error al cargar datos:', e);
+                Toast.show('Error al cargar los datos. Se reiniciarán los datos.', 'danger');
+                resetData();
+            }
+        }
+
+        function loadSampleData() {
+            // Materias de ejemplo
+            subjects = [
+                {
+                    id: 1,
+                    name: 'Matemáticas Avanzadas',
+                    code: 'MAT-301',
+                    credits: 4,
+                    professor: 'Dr. García',
+                    status: 'in_progress',
+                    grades: [
+                        { name: 'Parcial 1', weight: 30, score: 85 },
+                        { name: 'Parcial 2', weight: 30, score: null },
+                        { name: 'Final', weight: 40, score: null }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: 'Programación Web',
+                    code: 'PROG-202',
+                    credits: 3,
+                    professor: 'Ing. Martínez',
+                    status: 'in_progress',
+                    grades: [
+                        { name: 'Proyecto 1', weight: 20, score: 90 },
+                        { name: 'Proyecto 2', weight: 20, score: null },
+                        { name: 'Examen', weight: 60, score: null }
+                    ]
+                },
+                {
+                    id: 3,
+                    name: 'Base de Datos',
+                    code: 'BD-201',
+                    credits: 3,
+                    professor: 'Lic. Rodríguez',
+                    status: 'approved',
+                    grades: [
+                        { name: 'Parcial 1', weight: 30, score: 75 },
+                        { name: 'Parcial 2', weight: 30, score: 80 },
+                        { name: 'Final', weight: 40, score: 85 }
+                    ]
+                }
+            ];
+
+            // Horarios de ejemplo
+            schedules = [
+                {
+                    id: 1,
+                    subjectId: 1,
+                    day: 'monday',
+                    start: '08:00',
+                    end: '10:00',
+                    location: 'Aula 302'
+                },
+                {
+                    id: 2,
+                    subjectId: 1,
+                    day: 'wednesday',
+                    start: '08:00',
+                    end: '10:00',
+                    location: 'Aula 302'
+                },
+                {
+                    id: 3,
+                    subjectId: 2,
+                    day: 'tuesday',
+                    start: '14:00',
+                    end: '16:00',
+                    location: 'Lab 105'
+                },
+                {
+                    id: 4,
+                    subjectId: 2,
+                    day: 'thursday',
+                    start: '14:00',
+                    end: '16:00',
+                    location: 'Lab 105'
+                }
+            ];
+
+            // Apuntes de ejemplo
+            notes = [
+                {
+                    id: 1,
+                    subjectId: 1,
+                    title: 'Teorema Fundamental del Cálculo',
+                    content: 'El teorema fundamental del cálculo establece la conexión entre el cálculo diferencial y el cálculo integral...',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    subjectId: 2,
+                    title: 'Introducción a React',
+                    content: 'React es una biblioteca de JavaScript para construir interfaces de usuario...',
+                    createdAt: new Date(Date.now() - 86400000).toISOString()
+                }
+            ];
+
+            saveData();
+        }
+
+        function resetData() {
+            subjects = [];
+            schedules = [];
+            notes = [];
+            saveData();
+            loadSampleData();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('academic-subjects', JSON.stringify(subjects));
+                localStorage.setItem('academic-schedules', JSON.stringify(schedules));
+                localStorage.setItem('academic-notes', JSON.stringify(notes));
+            } catch (e) {
+                console.error('Error al guardar datos:', e);
+                Toast.show('Error al guardar los datos', 'danger');
+            }
+        }
+
+        function setupEventListeners() {
+            // Guardar materia
+            document.getElementById('save-subject').addEventListener('click', saveSubject);
+
+            // Guardar apunte
+            document.getElementById('save-note').addEventListener('click', saveNote);
+
+            // Guardar horario
+            document.getElementById('save-schedule').addEventListener('click', saveSchedule);
+
+            // Buscar materias
+            document.getElementById('subject-search').addEventListener('input', debounce(filterSubjects, 300));
+
+            // Botones de período
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelector('.period-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    updateUI();
+                });
+            });
+
+            // Botones de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector('.filter-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderSubjects();
+                });
+            });
+
+            // Ver todas las materias
+            document.getElementById('view-all-subjects').addEventListener('click', function (e) {
+                e.preventDefault();
+                currentFilter = 'all';
+                document.querySelector('.filter-btn.active').classList.remove('active');
+                document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
+                renderSubjects();
+            });
+
+            // Calculadora de notas
+            document.getElementById('subject-selector').addEventListener('change', function () {
+                updateGradeInputs();
+            });
+
+            document.getElementById('calculate-btn').addEventListener('click', calculateGrade);
+
+            // Validación de formularios
+            const forms = document.querySelectorAll('.needs-validation');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    if (form.checkValidity()) {
+                        if (form.id === 'subject-form') {
+                            saveSubject();
+                        } else if (form.id === 'note-form') {
+                            saveNote();
+                        } else if (form.id === 'schedule-form') {
+                            saveSchedule();
+                        }
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }
+
+        function updateUI() {
+            updateDashboard();
+            renderSubjects();
+            renderSchedule();
+            renderNotes();
+            updateUpcomingTasks();
+            updateSubjectSelectors();
+        }
+
+        // Guardar materia
+        function saveSubject() {
+            const form = document.getElementById('subject-form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            try {
+                const subject = {
+                    id: Date.now(),
+                    name: document.getElementById('subject-name').value.trim(),
+                    code: document.getElementById('subject-code').value.trim(),
+                    credits: parseInt(document.getElementById('subject-credits').value),
+                    professor: document.getElementById('subject-professor').value.trim(),
+                    status: document.getElementById('subject-status').value,
+                    grades: []
+                };
+
+                subjects.push(subject);
+                saveData();
+
+                // Cerrar modal y resetear formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('subjectModal'));
+                modal.hide();
+                form.reset();
+                form.classList.remove('was-validated');
+
+                // Mostrar notificación
+                Toast.show('Materia guardada correctamente');
+
+                // Actualizar la UI
+                updateUI();
+            } catch (e) {
+                console.error('Error al guardar materia:', e);
+                Toast.show('Error al guardar la materia', 'danger');
+            }
+        }
+
+        // Guardar apunte
+        function saveNote() {
+            const form = document.getElementById('note-form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            try {
+                const note = {
+                    id: Date.now(),
+                    subjectId: parseInt(document.getElementById('note-subject').value),
+                    title: document.getElementById('note-title').value.trim(),
+                    content: document.getElementById('note-content').value.trim(),
+                    createdAt: new Date().toISOString()
+                };
+
+                notes.push(note);
+                saveData();
+
+                // Cerrar modal y resetear formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('noteModal'));
+                modal.hide();
+                form.reset();
+                form.classList.remove('was-validated');
+
+                // Mostrar notificación
+                Toast.show('Apunte guardado correctamente');
+
+                // Actualizar la UI
+                renderNotes();
+            } catch (e) {
+                console.error('Error al guardar apunte:', e);
+                Toast.show('Error al guardar el apunte', 'danger');
+            }
+        }
+
+        // Guardar horario
+        function saveSchedule() {
+            const form = document.getElementById('schedule-form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            try {
+                const schedule = {
+                    id: Date.now(),
+                    subjectId: parseInt(document.getElementById('schedule-subject').value),
+                    day: document.getElementById('schedule-day').value,
+                    start: document.getElementById('schedule-start').value,
+                    end: document.getElementById('schedule-end').value,
+                    location: document.getElementById('schedule-location').value.trim()
+                };
+
+                schedules.push(schedule);
+                saveData();
+
+                // Cerrar modal y resetear formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('scheduleModal'));
+                modal.hide();
+                form.reset();
+                form.classList.remove('was-validated');
+
+                // Mostrar notificación
+                Toast.show('Horario guardado correctamente');
+
+                // Actualizar la UI
+                renderSchedule();
+            } catch (e) {
+                console.error('Error al guardar horario:', e);
+                Toast.show('Error al guardar el horario', 'danger');
+            }
+        }
+
+        // Actualizar el dashboard
+        function updateDashboard() {
+            try {
+                // Calcular estadísticas
+                const approvedSubjects = subjects.filter(s => s.status === 'approved').length;
+                const inProgressSubjects = subjects.filter(s => s.status === 'in_progress').length;
+                const failedSubjects = subjects.filter(s => s.status === 'failed').length;
+
+                // Calcular GPA (promedio ponderado)
+                let totalCredits = 0;
+                let totalPoints = 0;
+
+                subjects.forEach(subject => {
+                    if (subject.status === 'approved' && subject.grades && subject.grades.length > 0) {
+                        const finalGrade = calculateSubjectGrade(subject);
+                        if (finalGrade !== null) {
+                            totalPoints += gradeToPoints(finalGrade) * subject.credits;
+                            totalCredits += subject.credits;
+                        }
+                    }
+                });
+
+                const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 0;
+
+                // Calcular progreso de materias en curso
+                const progressPercentage = inProgressSubjects > 0 ?
+                    Math.round((approvedSubjects / (approvedSubjects + inProgressSubjects + failedSubjects)) * 100 : 0;
+
+                // Actualizar UI
+                document.getElementById('gpa').textContent = gpa;
+                document.getElementById('completed').textContent = approvedSubjects;
+                document.getElementById('in-progress').textContent = inProgressSubjects;
+                document.getElementById('failed').textContent = failedSubjects;
+                document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+
+                // Actualizar tendencias (simplificado)
+                document.getElementById('gpa-trend').innerHTML = gpa > 3.5 ?
+                    '<i class="bi bi-arrow-up"></i> Buen rendimiento' :
+                    '<i class="bi bi-arrow-down"></i> Necesita mejorar';
+
+                document.getElementById('completed-trend').innerHTML = approvedSubjects > 0 ?
+                    '<i class="bi bi-arrow-up"></i> Buen progreso' :
+                    '<i class="bi bi-dash"></i> Sin materias aprobadas';
+
+                document.getElementById('failed-trend').innerHTML = failedSubjects > 0 ?
+                    '<i class="bi bi-arrow-down"></i> Atención requerida' :
+                    '<i class="bi bi-check"></i> Sin materias reprobadas';
+            } catch (e) {
+                console.error('Error al actualizar el dashboard:', e);
+            }
+        }
+
+        function gradeToPoints(grade) {
+            if (grade >= 90) return 4.0;
+            if (grade >= 80) return 3.0;
+            if (grade >= 70) return 2.0;
+            if (grade >= 60) return 1.0;
+            return 0.0;
+        }
+
+        // Renderizar materias
+        function renderSubjects() {
+            const container = document.getElementById('subjects-list');
+
+            try {
+                let filteredSubjects = [...subjects];
+
+                // Aplicar filtro
+                if (currentFilter === 'approved') {
+                    filteredSubjects = filteredSubjects.filter(s => s.status === 'approved');
+                } else if (currentFilter === 'progress') {
+                    filteredSubjects = filteredSubjects.filter(s => s.status === 'in_progress');
+                } else if (currentFilter === 'failed') {
+                    filteredSubjects = filteredSubjects.filter(s => s.status === 'failed');
+                }
+
+                // Aplicar búsqueda
+                const searchTerm = document.getElementById('subject-search').value.toLowerCase();
+                if (searchTerm) {
+                    filteredSubjects = filteredSubjects.filter(s =>
+                        s.name.toLowerCase().includes(searchTerm) ||
+                        (s.code && s.code.toLowerCase().includes(searchTerm)) ||
+                        (s.professor && s.professor.toLowerCase().includes(searchTerm))
+                    );
+                }
+
+                if (filteredSubjects.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="bi bi-book" style="font-size: 2rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">No hay materias que coincidan</p>
+                            <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#subjectModal">
+                                <i class="bi bi-plus"></i> Agregar materia
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Ordenar por estado y nombre
+                filteredSubjects.sort((a, b) => {
+                    // Primero por estado (en curso primero, luego aprobadas, luego reprobadas)
+                    const statusOrder = { 'in_progress': 1, 'approved': 2, 'failed': 3, 'pending': 4 };
+                    if (statusOrder[a.status] !== statusOrder[b.status]) {
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    }
+                    // Luego por nombre
+                    return a.name.localeCompare(b.name);
+                });
+
+                // Mostrar solo las primeras 5 para la vista resumen
+                const subjectsToShow = currentFilter === 'all' ?
+                    filteredSubjects.slice(0, 5) :
+                    filteredSubjects;
+
+                container.innerHTML = subjectsToShow.map(subject => {
+                    const statusInfo = getSubjectStatusInfo(subject);
+                    const finalGrade = calculateSubjectGrade(subject);
+
+                    return `
+                        <div class="subject-item">
+                            <div class="d-flex align-items-center">
+                                <div class="subject-icon">
+                                    <i class="bi bi-book"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">${subject.name}</h6>
+                                    <small class="text-muted">${subject.code || 'Sin código'} • ${subject.professor || 'Sin profesor'}</small>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge ${statusInfo.class}">${statusInfo.text}</span>
+                                ${finalGrade !== null ? `<span class="badge bg-secondary ms-1">${finalGrade}%</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Error al renderizar materias:', e);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Error al cargar las materias. Intenta recargar la página.
+                    </div>
+                `;
+            }
+        }
+
+        function getSubjectStatusInfo(subject) {
+            switch (subject.status) {
+                case 'approved':
+                    return { text: 'Aprobada', class: 'bg-success' };
+                case 'failed':
+                    return { text: 'Reprobada', class: 'bg-danger' };
+                case 'pending':
+                    return { text: 'Pendiente', class: 'bg-warning text-dark' };
+                default:
+                    return { text: 'En curso', class: 'bg-primary' };
+            }
+        }
+
+        function calculateSubjectGrade(subject) {
+            if (!subject.grades || subject.grades.length === 0) return null;
+
+            let totalWeight = 0;
+            let totalScore = 0;
+            let allGraded = true;
+
+            for (const grade of subject.grades) {
+                if (grade.score === null || grade.score === undefined) {
+                    allGraded = false;
+                    break;
+                }
+                totalWeight += grade.weight;
+                totalScore += (grade.score * grade.weight) / 100;
+            }
+
+            if (!allGraded || totalWeight !== 100) return null;
+
+            return Math.round(totalScore);
+        }
+
+        // Renderizar horario
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+
+            try {
+                if (schedules.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-3">
+                            <i class="bi bi-calendar" style="font-size: 2rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">No hay horarios registrados</p>
+                            <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                                <i class="bi bi-plus"></i> Agregar horario
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Agrupar horarios por día
+                const days = {
+                    monday: { name: 'Lunes', classes: [] },
+                    tuesday: { name: 'Martes', classes: [] },
+                    wednesday: { name: 'Miércoles', classes: [] },
+                    thursday: { name: 'Jueves', classes: [] },
+                    friday: { name: 'Viernes', classes: [] },
+                    saturday: { name: 'Sábado', classes: [] }
+                };
+
+                schedules.forEach(schedule => {
+                    const subject = subjects.find(s => s.id === schedule.subjectId);
+                    if (subject && days[schedule.day]) {
+                        days[schedule.day].classes.push({
+                            subject: subject.name,
+                            time: `${formatTime(schedule.start)} - ${formatTime(schedule.end)}`,
+                            location: schedule.location || 'Sin especificar'
+                        });
+                    }
+                });
+
+                // Ordenar clases por hora
+                Object.values(days).forEach(day => {
+                    day.classes.sort((a, b) => {
+                        return a.time.localeCompare(b.time);
+                    });
+                });
+
+                // Mostrar horario
+                container.innerHTML = `
+                    <button class="btn btn-sm btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                        <i class="bi bi-plus"></i> Agregar clase
+                    </button>
+                    
+                    ${Object.entries(days).map(([dayKey, day]) => `
+                        <div class="schedule-day">
+                            <h6>${day.name}</h6>
+                            ${day.classes.length > 0 ?
+                        day.classes.map(cls => `
+                                    <div class="schedule-class">
+                                        <strong>${cls.subject}</strong>
+                                        <div class="text-muted small">${cls.time}</div>
+                                        <div class="text-muted small">${cls.location}</div>
+                                    </div>
+                                `).join('') :
+                        '<p class="text-muted small">No hay clases este día</p>'
+                    }
+                        </div>
+                    `).join('')}
+                `;
+            } catch (e) {
+                console.error('Error al renderizar horario:', e);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Error al cargar el horario. Intenta recargar la página.
+                    </div>
+                `;
+            }
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        // Renderizar apuntes
+        function renderNotes() {
+            const container = document.getElementById('notes-list');
+
+            try {
+                // Ordenar apuntes por fecha (más recientes primero)
+                const sortedNotes = [...notes].sort((a, b) =>
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+
+                const recentNotes = sortedNotes.slice(0, 3);
+
+                if (recentNotes.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-3">
+                            <i class="bi bi-journal-text" style="font-size: 2rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">No hay apuntes recientes</p>
+                            <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#noteModal">
+                                <i class="bi bi-plus"></i> Crear primer apunte
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = recentNotes.map(note => {
+                    const subject = subjects.find(s => s.id === note.subjectId);
+                    const subjectName = subject ? subject.name : 'Materia desconocida';
+                    const date = new Date(note.createdAt);
+                    const formattedDate = date.toLocaleDateString('es-ES', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+
+                    // Limitar contenido a 100 caracteres
+                    const previewContent = note.content.length > 100 ?
+                        note.content.substring(0, 100) + '...' :
+                        note.content;
+
+                    return `
+                        <div class="note-card">
+                            <h6>${note.title}</h6>
+                            <small class="text-muted">${subjectName} • ${formattedDate}</small>
+                            <p class="mt-2">${previewContent}</p>
+                            <a href="#" class="small" data-note-id="${note.id}">Ver completo</a>
+                        </div>
+                    `;
+                }).join('') + `
+                    <div class="text-center mt-3">
+                        <a href="#" class="btn btn-sm btn-outline-primary" id="view-all-notes">Ver todos los apuntes</a>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('Error al renderizar apuntes:', e);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Error al cargar los apuntes. Intenta recargar la página.
+                    </div>
+                `;
+            }
+        }
+
+        // Actualizar próximas tareas
+        function updateUpcomingTasks() {
+            const container = document.getElementById('upcoming-tasks');
+            const countElement = document.getElementById('tasks-count');
+
+            try {
+                // Simular algunas tareas próximas (en una aplicación real, esto vendría de una base de datos)
+                const upcomingTasks = [
+                    { subject: 'Matemáticas Avanzadas', task: 'Entrega de proyecto', due: '2023-11-15' },
+                    { subject: 'Programación Web', task: 'Examen parcial', due: '2023-11-20' }
+                ];
+
+                countElement.textContent = upcomingTasks.length;
+
+                if (upcomingTasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-3">
+                            <i class="bi bi-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
+                            <p class="text-muted mt-2">No hay actividades próximas</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = upcomingTasks.map(task => `
+                    <div class="alert alert-warning d-flex align-items-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>
+                            <strong>${task.subject}</strong>
+                            <div class="small">${task.task} - Vence ${formatDate(task.due)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Error al actualizar tareas:', e);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        Error al cargar las tareas. Intenta recargar la página.
+                    </div>
+                `;
+            }
+        }
+
+        // Actualizar selectores de materias en formularios
+        function updateSubjectSelectors() {
+            const selectors = [
+                document.getElementById('note-subject'),
+                document.getElementById('schedule-subject'),
+                document.getElementById('subject-selector')
+            ];
+
+            selectors.forEach(selector => {
+                if (!selector) return;
+
+                // Guardar el valor seleccionado actual
+                const currentValue = selector.value;
+
+                // Limpiar opciones excepto la primera
+                while (selector.options.length > 1) {
+                    selector.remove(1);
+                }
+
+                // Agregar materias
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = subject.name;
+                    selector.appendChild(option);
+                });
+
+                // Restaurar el valor seleccionado si aún existe
+                if (currentValue && [...selector.options].some(opt => opt.value === currentValue)) {
+                    selector.value = currentValue;
+                }
+            });
+        }
+
+        // Actualizar inputs de notas para la calculadora
+        function updateGradeInputs() {
+            const subjectId = parseInt(document.getElementById('subject-selector').value);
+            const gradeInputs = document.getElementById('grade-inputs');
+            const resultDisplay = document.getElementById('grade-result');
+
+            if (!subjectId) {
+                gradeInputs.innerHTML = '';
+                resultDisplay.textContent = 'Selecciona una materia';
+                return;
+            }
+
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject || !subject.grades || subject.grades.length === 0) {
+                gradeInputs.innerHTML = '<p class="text-muted">Esta materia no tiene componentes de evaluación definidos.</p>';
+                resultDisplay.textContent = 'No hay datos para calcular';
+                return;
+            }
+
+            gradeInputs.innerHTML = `
+                <h6 class="mt-3">Componentes de evaluación</h6>
+                ${subject.grades.map((grade, index) => `
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">${grade.name}</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control grade-input" 
+                                    data-index="${index}" min="0" max="100" 
+                                    value="${grade.score !== null ? grade.score : ''}"
+                                    placeholder="Nota (0-100)">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <small class="text-muted">Peso: ${grade.weight}%</small>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <div class="w-100">
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                        style="width: ${grade.weight}%" 
+                                        aria-valuenow="${grade.weight}" 
+                                        aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+
+            // Agregar event listeners a los inputs
+            document.querySelectorAll('.grade-input').forEach(input => {
+                input.addEventListener('input', function () {
+                    calculateGrade();
+                });
+            });
+
+            // Calcular automáticamente si hay notas
+            calculateGrade();
+        }
+
+        // Calcular nota final
+        function calculateGrade() {
+            const subjectId = parseInt(document.getElementById('subject-selector').value);
+            const resultDisplay = document.getElementById('grade-result');
+
+            if (!subjectId) {
+                resultDisplay.textContent = 'Selecciona una materia';
+                return;
+            }
+
+            const subject = subjects.find(s => s.id === subjectId);
+            if (!subject || !subject.grades || subject.grades.length === 0) {
+                resultDisplay.textContent = 'No hay datos para calcular';
+                return;
+            }
+
+            let totalWeight = 0;
+            let totalScore = 0;
+            let allGraded = true;
+
+            subject.grades.forEach((grade, index) => {
+                const input = document.querySelector(`.grade-input[data-index="${index}"]`);
+                const score = input ? parseFloat(input.value) : null;
+
+                if (isNaN(score) {
+                    allGraded = false;
+                } else {
+                    totalWeight += grade.weight;
+                    totalScore += (score * grade.weight) / 100;
+                }
+            });
+
+            if (!allGraded) {
+                resultDisplay.textContent = 'Ingresa todas las notas para calcular';
+                return;
+            }
+
+            if (totalWeight !== 100) {
+                resultDisplay.textContent = 'La suma de los pesos debe ser 100%';
+                return;
+            }
+
+            const finalGrade = Math.round(totalScore);
+            let gradeClass = 'text-danger';
+
+            if (finalGrade >= 90) gradeClass = 'text-success';
+            else if (finalGrade >= 70) gradeClass = 'text-warning';
+            else if (finalGrade >= 60) gradeClass = 'text-info';
+
+            resultDisplay.innerHTML = `
+                Nota final: <span class="${gradeClass} fw-bold">${finalGrade}%</span>
+                <span class="badge ${getGradeBadgeClass(finalGrade)} ms-2">${getGradeLetter(finalGrade)}</span>
+            `;
+        }
+
+        function getGradeLetter(grade) {
+            if (grade >= 90) return 'A';
+            if (grade >= 80) return 'B';
+            if (grade >= 70) return 'C';
+            if (grade >= 60) return 'D';
+            return 'F';
+        }
+
+        function getGradeBadgeClass(grade) {
+            if (grade >= 90) return 'grade-A';
+            if (grade >= 80) return 'grade-B';
+            if (grade >= 70) return 'grade-C';
+            if (grade >= 60) return 'grade-D';
+            return 'grade-F';
+        }
+
+        // Funciones de utilidad
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'short' };
+            return new Date(dateString).toLocaleDateString('es-ES', options);
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function () {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+    </script>
+</body>
+
+</html>
