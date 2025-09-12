@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduplan - Gestión Financiera Inteligente</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .sidebar {
+            background-color: #0d6efd;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            border-radius: 5px;
+            padding: 10px 15px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: #80b9e1;
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .income-color {
+            color: var(--secondary-color);
+        }
+
+        .expense-color {
+            color: var(--danger-color);
+        }
+
+        .savings-color {
+            color: var(--primary-color);
+        }
+
+        .budget-color {
+            color: var(--warning-color);
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            border-radius: 5px;
+        }
+
+        .transaction-item {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-category {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .category-food {
+            background-color: #e67e22;
+        }
+
+        .category-transport {
+            background-color: #3498db;
+        }
+
+        .category-housing {
+            background-color: #9b59b6;
+        }
+
+        .category-entertainment {
+            background-color: #f1c40f;
+        }
+
+        .category-shopping {
+            background-color: #1abc9c;
+        }
+
+        .category-income {
+            background-color: #2ecc71;
+        }
+
+        .category-other {
+            background-color: #95a5a6;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .alert-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.2);
+            color: #8e6c0f;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: #95a5a6;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="text-center mb-4">
+                    <h4><i class="bi bi-wallet2"></i> EduPlan</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="Index.html">
+                            <i class="bi bi-speedometer2"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="academico.html">
+                            <i class="bi bi-cash-stack"></i> Gestión académica
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="agenda.html">
+                            <i class="bi bi-pie-chart"></i> Agenda
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="herramientas.html">
+                            <i class="bi bi-bell"></i> Herramientas extra
+                        </a>
+
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-md-9 col-lg-10 main-content">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Panel de Gestión Financiera</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn"
+                                data-period="today">Hoy</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn"
+                                data-period="week">Semana</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn active"
+                                data-period="month">Mes</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary period-btn"
+                                data-period="year">Año</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#transactionModal">
+                            <i class="bi bi-plus"></i> Agregar Transacción
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4" id="stats-cards">
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value income-color" id="total-income">$0</div>
+                            <div class="label">Ingresos</div>
+                            <small class="text-success" id="income-trend"><i class="bi bi-arrow-up"></i> 0% vs periodo
+                                anterior</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value expense-color" id="total-expenses">$0</div>
+                            <div class="label">Gastos</div>
+                            <small class="text-danger" id="expense-trend"><i class="bi bi-arrow-down"></i> 0% vs periodo
+                                anterior</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value savings-color" id="total-savings">$0</div>
+                            <div class="label">Ahorros</div>
+                            <small class="text-primary" id="savings-trend"><i class="bi bi-arrow-up"></i> 0% vs periodo
+                                anterior</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="value budget-color" id="budget-usage">0%</div>
+                            <div class="label">Presupuesto usado</div>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-warning" id="budget-progress" role="progressbar"
+                                    style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Transactions and Budgets -->
+                    <div class="col-lg-8">
+                        <!-- Recent Transactions -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Transacciones Recientes</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown">
+                                        <i class="bi bi-funnel"></i> Filtros
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item filter-btn active" href="#"
+                                                data-filter="all">Todos</a></li>
+                                        <li><a class="dropdown-item filter-btn" href="#"
+                                                data-filter="income">Ingresos</a></li>
+                                        <li><a class="dropdown-item filter-btn" href="#"
+                                                data-filter="expense">Gastos</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item filter-btn" href="#" data-filter="month">Este
+                                                mes</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="search-bar">
+                                    <i class="bi bi-search"></i>
+                                    <input type="text" class="form-control" id="transaction-search"
+                                        placeholder="Buscar transacciones...">
+                                </div>
+
+                                <div id="transactions-list">
+                                    <!-- Las transacciones se cargarán aquí dinámicamente -->
+                                    <div class="text-center py-5">
+                                        <i class="bi bi-wallet2" style="font-size: 2rem; color: #ccc;"></i>
+                                        <p class="text-muted mt-2">No hay transacciones registradas</p>
+                                        <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal"
+                                            data-bs-target="#transactionModal">
+                                            <i class="bi bi-plus"></i> Agregar primera transacción
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <a href="#" class="btn btn-sm btn-outline-primary" id="view-all-transactions">Ver
+                                        todas las transacciones</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budgets and Alerts -->
+                    <div class="col-lg-4">
+                        <!-- Budget Progress -->
+                        <div class="card">
+                            <div class="card-header">
+                                Progreso de Presupuestos
+                            </div>
+                            <div class="card-body" id="budgets-list">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Comida</span>
+                                        <span>$0 / $600</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Transporte</span>
+                                        <span>$0 / $200</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-sm btn-outline-primary w-100 mt-2" data-bs-toggle="modal"
+                                    data-bs-target="#budgetModal">
+                                    <i class="bi bi-plus"></i> Crear nuevo presupuesto
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Financial Alerts -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Alertas Financieras</span>
+                                <span class="badge bg-danger" id="alerts-count">0 nuevas</span>
+                            </div>
+                            <div class="card-body" id="alerts-list">
+                                <div class="text-center py-3">
+                                    <i class="bi bi-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
+                                    <p class="text-muted mt-2">No hay alertas en este momento</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Gastos por Categoría
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="expensesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Tendencias de Gastos
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="trendsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Transacción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transaction-form">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="income" value="income"
+                                        checked>
+                                    <label class="form-check-label" for="income">Ingreso</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="expense"
+                                        value="expense">
+                                    <label class="form-check-label" for="expense">Gasto</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Cantidad</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="amount" placeholder="0.00"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="description" placeholder="Ej: Salario mensual"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Categoría</label>
+                            <select class="form-select" id="category" required>
+                                <option value="" selected disabled>Seleccionar categoría...</option>
+                                <option value="food">Comida</option>
+                                <option value="transport">Transporte</option>
+                                <option value="housing">Vivienda</option>
+                                <option value="entertainment">Entretenimiento</option>
+                                <option value="shopping">Compras</option>
+                                <option value="income">Ingresos</option>
+                                <option value="other">Otros</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-transaction">Guardar Transacción</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Modal -->
+    <div class="modal fade" id="budgetModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear Presupuesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="budget-form">
+                        <div class="mb-3">
+                            <label for="budget-category" class="form-label">Categoría</label>
+                            <select class="form-select" id="budget-category" required>
+                                <option value="" selected disabled>Seleccionar categoría...</option>
+                                <option value="food">Comida</option>
+                                <option value="transport">Transporte</option>
+                                <option value="housing">Vivienda</option>
+                                <option value="entertainment">Entretenimiento</option>
+                                <option value="shopping">Compras</option>
+                                <option value="other">Otros</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="budget-amount" class="form-label">Monto del Presupuesto</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" step="0.01" class="form-control" id="budget-amount"
+                                    placeholder="0.00" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="budget-period" class="form-label">Período</label>
+                            <select class="form-select" id="budget-period" required>
+                                <option value="monthly" selected>Mensual</option>
+                                <option value="weekly">Semanal</option>
+                                <option value="yearly">Anual</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-budget">Guardar Presupuesto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos de la aplicación
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let budgets = JSON.parse(localStorage.getItem('budgets')) || [
+            { category: 'food', amount: 600, period: 'monthly', spent: 0 },
+            { category: 'transport', amount: 200, period: 'monthly', spent: 0 }
+        ];
+        let currentPeriod = 'month';
+        let currentFilter = 'all';
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configurar fecha por defecto en el formulario
+            document.getElementById('date').valueAsDate = new Date();
+
+            // Cargar datos iniciales
+            updateDashboard();
+            renderTransactions();
+            renderBudgets();
+            updateAlerts();
+
+            // Inicializar gráficos
+            initCharts();
+
+            // Event listeners
+            document.getElementById('save-transaction').addEventListener('click', saveTransaction);
+            document.getElementById('save-budget').addEventListener('click', saveBudget);
+            document.getElementById('transaction-search').addEventListener('input', filterTransactions);
+
+            // Botones de período
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelector('.period-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    updateDashboard();
+                    renderTransactions();
+                });
+            });
+
+            // Botones de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector('.filter-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderTransactions();
+                });
+            });
+        });
+
+        // Guardar transacción
+        function saveTransaction() {
+            const form = document.getElementById('transaction-form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const transaction = {
+                id: Date.now(),
+                type: document.querySelector('input[name="type"]:checked').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                date: document.getElementById('date').value,
+                createdAt: new Date().toISOString()
+            };
+
+            transactions.push(transaction);
+            saveData();
+
+            // Actualizar presupuesto si es un gasto
+            if (transaction.type === 'expense') {
+                updateBudgetSpent(transaction.category, transaction.amount);
+            }
+
+            // Cerrar modal y resetear formulario
+            const modal = bootstrap.Modal.getInstance(document.getElementById('transactionModal'));
+            modal.hide();
+            form.reset();
+            form.classList.remove('was-validated');
+
+            // Actualizar la UI
+            updateDashboard();
+            renderTransactions();
+            updateAlerts();
+        }
+
+        // Guardar presupuesto
+        function saveBudget() {
+            const form = document.getElementById('budget-form');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const budget = {
+                category: document.getElementById('budget-category').value,
+                amount: parseFloat(document.getElementById('budget-amount').value),
+                period: document.getElementById('budget-period').value,
+                spent: 0
+            };
+
+            // Verificar si ya existe un presupuesto para esta categoría
+            const existingIndex = budgets.findIndex(b => b.category === budget.category);
+            if (existingIndex >= 0) {
+                budgets[existingIndex] = budget;
+            } else {
+                budgets.push(budget);
+            }
+
+            saveData();
+
+            // Cerrar modal y resetear formulario
+            const modal = bootstrap.Modal.getInstance(document.getElementById('budgetModal'));
+            modal.hide();
+            form.reset();
+            form.classList.remove('was-validated');
+
+            // Actualizar la UI
+            renderBudgets();
+            updateDashboard();
+            updateAlerts();
+        }
+
+        // Actualizar el gasto en un presupuesto
+        function updateBudgetSpent(category, amount) {
+            const budget = budgets.find(b => b.category === category);
+            if (budget) {
+                budget.spent += amount;
+                saveData();
+                renderBudgets();
+            }
+        }
+
+        // Guardar datos en localStorage
+        function saveData() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('budgets', JSON.stringify(budgets));
+        }
+
+        // Actualizar el dashboard
+        function updateDashboard() {
+            const filteredTransactions = filterTransactionsByPeriod(transactions, currentPeriod);
+
+            // Calcular totales
+            const totalIncome = filteredTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const totalExpenses = filteredTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+
+            const totalSavings = totalIncome - totalExpenses;
+
+            // Calcular uso de presupuesto
+            const totalBudget = budgets.reduce((sum, b) => sum + b.amount, 0);
+            const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
+            const budgetUsage = totalBudget > 0 ? Math.min(100, (totalSpent / totalBudget) * 100) : 0;
+
+            // Actualizar UI
+            document.getElementById('total-income').textContent = `$${totalIncome.toFixed(2)}`;
+            document.getElementById('total-expenses').textContent = `$${totalExpenses.toFixed(2)}`;
+            document.getElementById('total-savings').textContent = `$${totalSavings.toFixed(2)}`;
+            document.getElementById('budget-usage').textContent = `${budgetUsage.toFixed(0)}%`;
+            document.getElementById('budget-progress').style.width = `${budgetUsage}%`;
+
+            // Actualizar gráficos
+            updateCharts();
+        }
+
+        // Renderizar transacciones
+        function renderTransactions() {
+            const container = document.getElementById('transactions-list');
+            let filteredTransactions = filterTransactionsByPeriod(transactions, currentPeriod);
+
+            // Aplicar filtro adicional
+            if (currentFilter === 'income') {
+                filteredTransactions = filteredTransactions.filter(t => t.type === 'income');
+            } else if (currentFilter === 'expense') {
+                filteredTransactions = filteredTransactions.filter(t => t.type === 'expense');
+            } else if (currentFilter === 'month') {
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                filteredTransactions = filteredTransactions.filter(t => t.date >= firstDay);
+            }
+
+            // Aplicar búsqueda
+            const searchTerm = document.getElementById('transaction-search').value.toLowerCase();
+            if (searchTerm) {
+                filteredTransactions = filteredTransactions.filter(t =>
+                    t.description.toLowerCase().includes(searchTerm) ||
+                    t.category.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredTransactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-wallet2" style="font-size: 2rem; color: #ccc;"></i>
+                        <p class="text-muted mt-2">No hay transacciones que coincidan</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Ordenar por fecha (más reciente primero)
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // Mostrar solo las últimas 5 para la vista resumen
+            const transactionsToShow = currentFilter === 'all' ?
+                filteredTransactions.slice(0, 5) :
+                filteredTransactions;
+
+            container.innerHTML = transactionsToShow.map(transaction => `
+                <div class="transaction-item">
+                    <div class="d-flex align-items-center">
+                        <div class="transaction-category category-${transaction.category}">
+                            <i class="bi ${getCategoryIcon(transaction.category)}"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">${transaction.description}</h6>
+                            <small class="text-muted">${getCategoryName(transaction.category)} • ${formatDate(transaction.date)}</small>
+                        </div>
+                    </div>
+                    <div class="${transaction.type === 'income' ? 'text-success' : 'text-danger'}">
+                        ${transaction.type === 'income' ? '+' : '-'}$${transaction.amount.toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar presupuestos
+        function renderBudgets() {
+            const container = document.getElementById('budgets-list');
+
+            if (budgets.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="bi bi-pie-chart" style="font-size: 2rem; color: #ccc;"></i>
+                        <p class="text-muted mt-2">No hay presupuestos configurados</p>
+                        <button class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#budgetModal">
+                            <i class="bi bi-plus"></i> Crear primer presupuesto
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = budgets.map(budget => {
+                const percentage = (budget.spent / budget.amount) * 100;
+                let progressClass = 'bg-success';
+
+                if (percentage > 75) progressClass = 'bg-danger';
+                else if (percentage > 50) progressClass = 'bg-warning';
+
+                return `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>${getCategoryName(budget.category)}</span>
+                            <span>$${budget.spent.toFixed(2)} / $${budget.amount.toFixed(2)}</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar ${progressClass}" role="progressbar" 
+                                style="width: ${percentage}%" aria-valuenow="${percentage}" 
+                                aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('') + `
+                <button class="btn btn-sm btn-outline-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#budgetModal">
+                    <i class="bi bi-plus"></i> Crear nuevo presupuesto
+                </button>
+            `;
+        }
+
+        // Actualizar alertas
+        function updateAlerts() {
+            const container = document.getElementById('alerts-list');
+            let alerts = [];
+
+            // Verificar presupuestos excedidos
+            budgets.forEach(budget => {
+                const percentage = (budget.spent / budget.amount) * 100;
+
+                if (percentage >= 100) {
+                    alerts.push({
+                        type: 'danger',
+                        icon: 'bi-lightning-charge-fill',
+                        title: `Presupuesto de ${getCategoryName(budget.category)} excedido`,
+                        message: `Has gastado $${budget.spent.toFixed(2)} de $${budget.amount.toFixed(2)} (${percentage.toFixed(0)}%)`
+                    });
+                } else if (percentage >= 75) {
+                    alerts.push({
+                        type: 'warning',
+                        icon: 'bi-exclamation-triangle-fill',
+                        title: `Presupuesto de ${getCategoryName(budget.category)} al ${percentage.toFixed(0)}%`,
+                        message: `Has gastado $${budget.spent.toFixed(2)} de $${budget.amount.toFixed(2)}`
+                    });
+                }
+            });
+
+            // Verificar gastos inusuales (simplificado)
+            if (alerts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="bi bi-check-circle" style="font-size: 2rem; color: #2ecc71;"></i>
+                        <p class="text-muted mt-2">No hay alertas en este momento</p>
+                    </div>
+                `;
+                document.getElementById('alerts-count').textContent = '0 nuevas';
+            } else {
+                container.innerHTML = alerts.map(alert => `
+                    <div class="alert alert-${alert.type} d-flex align-items-center mb-3">
+                        <i class="bi ${alert.icon} me-2"></i>
+                        <div>
+                            <strong>${alert.title}</strong>
+                            <div class="small">${alert.message}</div>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('alerts-count').textContent = `${alerts.length} nuevas`;
+            }
+        }
+
+        // Filtrar transacciones por período
+        function filterTransactionsByPeriod(transactions, period) {
+            const now = new Date();
+            let startDate;
+
+            switch (period) {
+                case 'today':
+                    startDate = new Date(now.setHours(0, 0, 0, 0)).toISOString().split('T')[0];
+                    return transactions.filter(t => t.date === startDate);
+                case 'week':
+                    const day = now.getDay();
+                    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                    startDate = new Date(now.setDate(diff)).toISOString().split('T')[0];
+                    return transactions.filter(t => t.date >= startDate);
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                    return transactions.filter(t => t.date >= startDate);
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0];
+                    return transactions.filter(t => t.date >= startDate);
+                default:
+                    return transactions;
+            }
+        }
+
+        // Filtrar transacciones por búsqueda
+        function filterTransactions() {
+            renderTransactions();
+        }
+
+        // Inicializar gráficos
+        function initCharts() {
+            window.expensesChart = new Chart(
+                document.getElementById('expensesChart').getContext('2d'),
+                getExpensesChartConfig()
+            );
+
+            window.trendsChart = new Chart(
+                document.getElementById('trendsChart').getContext('2d'),
+                getTrendsChartConfig()
+            );
+        }
+
+        // Actualizar gráficos
+        function updateCharts() {
+            window.expensesChart.data = getExpensesChartData();
+            window.expensesChart.update();
+
+            window.trendsChart.data = getTrendsChartData();
+            window.trendsChart.update();
+        }
+
+        // Configuración del gráfico de gastos por categoría
+        function getExpensesChartConfig() {
+            return {
+                type: 'doughnut',
+                data: getExpensesChartData(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += '$' + context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        // Datos para el gráfico de gastos por categoría
+        function getExpensesChartData() {
+            const categories = ['food', 'transport', 'housing', 'entertainment', 'shopping', 'other'];
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+
+            const expensesByCategory = categories.map(category => {
+                return transactions
+                    .filter(t => t.type === 'expense' && t.category === category && t.date >= firstDayOfMonth)
+                    .reduce((sum, t) => sum + t.amount, 0);
+            });
+
+            return {
+                labels: categories.map(getCategoryName),
+                datasets: [{
+                    data: expensesByCategory,
+                    backgroundColor: [
+                        '#e67e22',
+                        '#3498db',
+                        '#9b59b6',
+                        '#f1c40f',
+                        '#1abc9c',
+                        '#95a5a6'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+        }
+
+        // Configuración del gráfico de tendencias
+        function getTrendsChartConfig() {
+            return {
+                type: 'line',
+                data: getTrendsChartData(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += '$' + context.raw;
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function (value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        // Datos para el gráfico de tendencias
+        function getTrendsChartData() {
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const monthsToShow = 6;
+
+            const labels = [];
+            const incomeData = [];
+            const expenseData = [];
+
+            for (let i = monthsToShow - 1; i >= 0; i--) {
+                const monthIndex = (currentMonth - i + 12) % 12;
+                labels.push(months[monthIndex]);
+
+                const year = now.getFullYear() - (i > currentMonth ? 1 : 0);
+                const firstDay = new Date(year, monthIndex, 1).toISOString().split('T')[0];
+                const lastDay = new Date(year, monthIndex + 1, 0).toISOString().split('T')[0];
+
+                const monthlyTransactions = transactions.filter(t =>
+                    t.date >= firstDay && t.date <= lastDay
+                );
+
+                incomeData.push(
+                    monthlyTransactions
+                        .filter(t => t.type === 'income')
+                        .reduce((sum, t) => sum + t.amount, 0)
+                );
+
+                expenseData.push(
+                    monthlyTransactions
+                        .filter(t => t.type === 'expense')
+                        .reduce((sum, t) => sum + t.amount, 0)
+                );
+            }
+
+            return {
+                labels: labels,
+                datasets: [{
+                    label: 'Gastos',
+                    data: expenseData,
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Ingresos',
+                    data: incomeData,
+                    borderColor: '#2ecc71',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            };
+        }
+
+        // Funciones de utilidad
+        function getCategoryIcon(category) {
+            const icons = {
+                'food': 'bi-cup-hot',
+                'transport': 'bi-bus-front',
+                'housing': 'bi-house',
+                'entertainment': 'bi-ticket-perforated',
+                'shopping': 'bi-cart',
+                'income': 'bi-cash-coin',
+                'other': 'bi-three-dots'
+            };
+            return icons[category] || 'bi-three-dots';
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'food': 'Comida',
+                'transport': 'Transporte',
+                'housing': 'Vivienda',
+                'entertainment': 'Entretenimiento',
+                'shopping': 'Compras',
+                'income': 'Ingresos',
+                'other': 'Otros'
+            };
+            return names[category] || category;
+        }
+
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'short' };
+            return new Date(dateString).toLocaleDateString('es-ES', options);
+        }
+    </script>
+    <script src="static/js/finanzas.js"></script>    <!-- en finanzas.html -->
+</body>
+
+</html>
