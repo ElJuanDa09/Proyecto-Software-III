@@ -1,4 +1,4 @@
-// ---------------- Registro ----------------
+// Registro
 async function registrar() {
     const nombre = document.getElementById("registerName").value;
     const email = document.getElementById("registerEmail").value;
@@ -18,7 +18,7 @@ async function registrar() {
     }
 }
 
-// ---------------- Login ----------------
+// Login
 async function login() {
     const email = document.getElementById("loginEmail").value;
     const pass = document.getElementById("loginPassword").value;
@@ -31,7 +31,6 @@ async function login() {
         const data = await res.json();
         localStorage.setItem("user_id", data.user_id);
         toastr.success("Bienvenido!");
-        // Cerrar modal de login
         const modal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
         modal.hide();
     } else {
@@ -39,7 +38,7 @@ async function login() {
     }
 }
 
-// ---------------- Notificaciones ----------------
+// Notificaciones
 async function cargarNotificaciones() {
     const res = await fetch("http://127.0.0.1:8000/notificaciones");
     const notis = await res.json();

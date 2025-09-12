@@ -9,7 +9,7 @@ app = FastAPI()
 # Montar la carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="Frontend/static"), name="static")
 
-# Middleware CORS
+# Middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -18,8 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ------------------ MODELOS ------------------
-class Task(BaseModel):
+# MODELOS
     id: int
     titulo: str
     fecha: str
@@ -42,7 +41,7 @@ class Proyecto(BaseModel):
     titulo: str
     estado: str     # "en progreso", "completado"
 
-# --------- Modelos para Index (Usuarios y Notificaciones) ---------
+# Modelos para Index (Usuarios y Notificaciones)
 class Usuario(BaseModel):
     id: int
     nombre: str
@@ -55,7 +54,7 @@ class Notificacion(BaseModel):
     fecha: str
     leida: bool = False
 
-# ------------------ DATA TEMPORAL ------------------
+# DATA TEMPORAL 
 tareas = []
 finanzas = []
 materias = []
@@ -65,9 +64,9 @@ notificaciones = [
     Notificacion(id=1, mensaje="Bienvenido a EduPlan 🎉", fecha="2025-09-11")
 ]
 
-# ------------------ RUTAS ------------------
+# RUTAS
 
-## Agenda
+# Agenda
 @app.get("/agenda", response_model=List[Task])
 def get_agenda():
     return tareas
@@ -77,7 +76,7 @@ def add_task(task: Task):
     tareas.append(task)
     return task
 
-## Finanzas
+# Finanzas
 @app.get("/finanzas", response_model=List[Transaccion])
 def get_finanzas():
     return finanzas
@@ -87,7 +86,7 @@ def add_transaccion(tr: Transaccion):
     finanzas.append(tr)
     return tr
 
-## Académico
+# Académico
 @app.get("/materias", response_model=List[Materia])
 def get_materias():
     return materias
@@ -97,7 +96,7 @@ def add_materia(mat: Materia):
     materias.append(mat)
     return mat
 
-## Herramientas (Proyectos extra)
+# Herramientas (Proyectos extra)
 @app.get("/proyectos", response_model=List[Proyecto])
 def get_proyectos():
     return proyectos
@@ -107,7 +106,7 @@ def add_proyecto(proy: Proyecto):
     proyectos.append(proy)
     return proy
 
-# ------------------ RUTAS INDEX ------------------
+# RUTAS INDEX
 
 @app.post("/register", response_model=Usuario)
 def registrar_usuario(user: Usuario):
