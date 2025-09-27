@@ -140,6 +140,20 @@
         input:checked+.slider:before {
             transform: translateX(26px);
         }
+        /* Botón de inicio de sesión */
+        .btn-login {
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
     </style>
 </head>
 
@@ -170,6 +184,11 @@
                             0
                         </span>
                     </button>
+                        <!-- Botón de inicio de sesión -->
+                    <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-bs-toggle="dropdown">
