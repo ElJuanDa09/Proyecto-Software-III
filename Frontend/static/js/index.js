@@ -1,3 +1,41 @@
+const express = require("express");
+const { MongoClient } = require("mongodb");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const url = "mongodb://localhost:27017";
+const client = new MongoClient(url);
+const dbName = "gestor_tareas";
+
+async function main() {
+  await client.connect();
+  console.log("✅ Conectado a MongoDB");
+  const db = client.db(dbName);
+
+  // Crear usuario
+  app.post("/usuarios", async (req, res) => {
+    const usuario = req.body;
+    const result = await db.collection("usuarios").insertOne(usuario);
+    res.send(result);
+  });
+
+  // Listar usuarios
+  app.get("/usuarios", async (req, res) => {
+    const usuarios = await db.collection("usuarios").find().toArray();
+    res.send(usuarios);
+  });
+
+  // Iniciar servidor
+  app.listen(3000, () => {
+    console.log("🚀 Servidor corriendo en http://localhost:3000");
+  });
+}
+
+main().catch(console.error);
+
 // Registro
 async function registrar() {
     const nombre = document.getElementById("registerName").value;
